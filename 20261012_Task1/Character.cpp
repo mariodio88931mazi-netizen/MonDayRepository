@@ -14,5 +14,5 @@ string Character::GetName()
 
 void Character::Attack()
 {
-	cout << "UŒ‚I" << endl;
+	cout << "UŒ‚‚µ‚½I" << endl;
 }

@@ -13,19 +13,3 @@ public:
 
 	virtual void Attack();
 };
-
-class player:public Character
-{
-
-};
-
-class Boss:public Character
-{
-	 
-};
-
-class Enemy:public Character
-
-{
-
-};
