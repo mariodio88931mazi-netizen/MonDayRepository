@@ -1,11 +1,9 @@
 #include "Boss.h"
 #include <iostream>
-Boss::Boss(string name) :Character(name)
-{
+using namespace std;
 
-}
-
+Boss::Boss(string name) :Character(name) {}
 void Boss::Attack()
 {
-	cout << "‹¦—Í‚È•KŽE‹Z‚ð•ú‚Á‚½I" << endl;
+	cout << "•KŽE‹Z‚ÅUŒ‚‚ð‚·‚é" << endl;
 }

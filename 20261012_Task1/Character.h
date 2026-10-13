@@ -1,15 +1,14 @@
 #pragma once
-#include <string>
-using namespace std;
-
+#include<string>
 class Character
 {
 private:
-	string name;
+	std::string name;
+
 public:
-	Character(string name);
-
-	string GetName();
-
+	Character(std::string name);
+	virtual ~Character() = default;
+	std::string GetName();
 	virtual void Attack();
 };
+
