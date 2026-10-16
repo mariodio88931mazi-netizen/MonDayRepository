@@ -1,8 +1,8 @@
-#include "Enemy.h"
+﻿#include "Enemy.h"
 #include <iostream>
 using namespace std;
 
 void Enemy::Attack()
 {
-    cout << "Bite Attack" << endl;/*NIHONGO TUKAUTO NAZEKA BIRUDO DEKINAI TAME EIGO*/
+    cout << "噛みつき攻撃" << endl;
 }

@@ -1,7 +1,7 @@
-#include "Character.h"
+﻿#include "Character.h"
 using namespace std;
-
+//考えること
 void Character::Attack()
 {
-    cout << "Normal Attack" << endl; /*NIHONGO TUKAUTO NAZEKA BIRUDO DEKINAI TAME EIGO*/
+	cout << "攻撃" << endl;
 }
