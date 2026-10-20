@@ -1,3 +1,8 @@
+/*1.BossクラスはCharacterクラスを継承する
+  2.Bossの攻撃
+  3.継承して攻撃を呼び出すだけなので変更しなくていい。
+  4.オーバーライドできないので、Chatacterクラスでかいた処理が出てくる。*/
+
 #include <iostream>
 #include "Character.h"
 #include "Player.h"
