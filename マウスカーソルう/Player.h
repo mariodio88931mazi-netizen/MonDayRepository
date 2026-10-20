@@ -4,15 +4,17 @@
 class Player
 {
 private:
-	int hp;			// 体力
-	int exp;		// 経験値
-	int level;		// レベル
-	float x, y;		// 現在の座標
+	int graph;
+	int HP;			// 体力
+	int EXP;		// 経験値
+	int Level;		// レベル
+	float X, Y;		// 現在の座標
 	float targetX, targetY; // 目標の座標
-	float moveEasing; // 移動のなめらかさ
+	float move; // 移動のなめらかさ
 public:
 	void Initialize
 	(
+		int handgraph,
 		int hp,
 		int startx,
 		int starty,	
@@ -20,10 +22,6 @@ public:
 		int level,
 		float moveEasing
 	);
-
-	// 座標取得
-	float GetX() const;
-	float GetY() const;
 
 	// 座標
 	void Draw();

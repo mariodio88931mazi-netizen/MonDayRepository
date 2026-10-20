@@ -76,7 +76,7 @@ void Sword::Update()
 	if (!isMousePressed)
 	{
 		angle += angleDifference * rotationSpeed;
-		if (angleDifference > 1.0f)
+		if (angleDifference > 1.5f)
 		{
 			attack = true;
 		}
@@ -87,7 +87,11 @@ void Sword::Update()
 	}
 	else
 	{
-		attack = false;
+		if (true)
+		{
+			attack = false;
+		}
+		
 	}
 	// デバッグ
 	if (CheckHitKey(KEY_INPUT_B))
