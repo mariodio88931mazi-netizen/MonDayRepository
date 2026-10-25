@@ -3,7 +3,7 @@
 
 void Player::Initialize
 (
-	int handgraph,
+	//int handgraph,
 	int hp,
 	int startx,
 	int starty,
@@ -12,7 +12,7 @@ void Player::Initialize
 	float moveEasing
 )
 {
-	graph = handgraph;
+	//graph = handgraph;
 	HP = hp;
 	EXP = exp;
 	Level = level;
@@ -41,14 +41,14 @@ void Player::Draw()
 		"X: %f  Y: %f",
 		X, Y
 	);
+	int Color = RGB(0, 0, 255);
 
 	// âÊñ íÜâõÇ…ê‘Ç¢â~Çã≠êßï\é¶
-	DrawRotaGraph2
-	(
-		static_cast<int>(x),
-		static_cast<int>(y),
-		625,
-		85,
+	DrawCircle(
+		X,
+		Y,
+		10,
+		Color,
 		TRUE
 	);
 }

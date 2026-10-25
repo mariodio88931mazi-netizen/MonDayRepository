@@ -4,7 +4,7 @@
 class Player
 {
 private:
-	int graph;
+	//int graph;
 	int HP;			// ‘Ì—Í
 	int EXP;		// ŒoŒ±’l
 	int Level;		// ƒŒƒxƒ‹
@@ -14,7 +14,7 @@ private:
 public:
 	void Initialize
 	(
-		int handgraph,
+		//int handgraph,
 		int hp,
 		int startx,
 		int starty,	
