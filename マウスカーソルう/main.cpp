@@ -1,5 +1,6 @@
 #include "DxLib.h"
 #include "Game.h"
+#include "Scene.h"
 
 int WINAPI WinMain(
     HINSTANCE hInstance,
@@ -19,44 +20,33 @@ int WINAPI WinMain(
     SetDrawScreen(DX_SCREEN_BACK);
     SetMouseDispFlag(FALSE);
 
-    // ã‚²ãƒ¼ãƒ åˆæœŸåŒ–
+    // ƒQ[ƒ€‰Šú‰»
     if (!GameInitialize())
     {
         DxLib_End();
         return -1;
     }
 
-    // trueï¼šã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã€falseï¼šã‚²ãƒ¼ãƒ ç”»é¢
+    // trueFƒ^ƒCƒgƒ‹‰æ–ÊAfalseFƒQ[ƒ€‰æ–Ê
     bool isTitle = true;
     bool oldEnter = false;
 
-    // ãƒ¡ã‚¤ãƒ³ãƒ«ãƒ¼ãƒ—
+    // ƒƒCƒ“ƒ‹[ƒv
     while (ProcessMessage() == 0 &&
         CheckHitKey(KEY_INPUT_ESCAPE) == 0)
     {
         ClearDrawScreen();
 
-        // Enterã‚­ãƒ¼ã®æŠ¼ã—ãŸç¬é–“ã‚’æ¤œå‡º
+        // EnterƒL[‚Ì‰Ÿ‚µ‚½uŠÔ‚ğŒŸo
         bool enter = CheckHitKey(KEY_INPUT_RETURN) != 0;
         bool enterPressed = enter && !oldEnter;
         oldEnter = enter;
 
         if (isTitle)
         {
-            // ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢
-            DrawFormatString(
-                500, 250,
-                GetColor(255, 255, 255),
-                "FrySord!"
-            );
+            StartScene();
 
-            DrawFormatString(
-                490, 350,
-                GetColor(255, 255, 0),
-                "Press ENTER to Start"
-            );
-
-            // Enterã‚­ãƒ¼ã§ã‚²ãƒ¼ãƒ é–‹å§‹
+            // EnterƒL[‚ÅƒQ[ƒ€ŠJn
             if (enterPressed)
             {
                 isTitle = false;
@@ -64,7 +54,7 @@ int WINAPI WinMain(
         }
         else
         {
-            // ã‚²ãƒ¼ãƒ ç”»é¢
+            // ƒQ[ƒ€‰æ–Ê
             GameUpdate();
             GameDraw();
         }
@@ -72,7 +62,7 @@ int WINAPI WinMain(
         ScreenFlip();
     }
 
-    // ã‚²ãƒ¼ãƒ çµ‚äº†å‡¦ç†
+    // ƒQ[ƒ€I—¹ˆ—
     GameFinalize();
 
     DxLib_End();

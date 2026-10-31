@@ -1,10 +1,34 @@
+#include "Dxlib.h"
+#include "Game.h"
 
-#include "Start.h"
-
-// ã‚¹ãƒ†ãƒ¼ã‚¸é¸æŠç”¨å¤‰æ•°ã®å®Ÿä½“
+// ƒXƒe[ƒW‘I‘ğ—p•Ï”‚ÌÀ‘Ì
 bool isPushUp = false;
 bool isPushDown = false;
 bool isPushEnter = false;
 
 const int stageMax = 3;
 int stageSelect = 0;
+
+void StartScene()
+{        
+    // ƒ^ƒCƒgƒ‹‰æ–Ê
+    DrawExtendGraph(
+        static_cast<int>(0.0),
+        0,
+        static_cast<int>(1300),
+        720,
+        BackGround,
+        FALSE);
+
+    DrawFormatString(
+        525, 250,
+        GetColor(255, 0, 0),
+        "FrySord!"
+    );
+
+    DrawFormatString(
+        490, 350,
+        GetColor(255, 255, 0),
+        "Press ENTER to Start"
+    );
+}

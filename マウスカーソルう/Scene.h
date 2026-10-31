@@ -1,12 +1,12 @@
 #pragma once
 #include "DxLib.h"
 
-extern int stageSelect = 0;
-extern const int stageMax = 5;
+extern int stageSelect;
+extern const int stageMax;
 
-extern bool isPushEnter = false;
-extern bool isPushDown = false;
-extern bool isPushUp = false;
+extern bool isPushEnter;
+extern bool isPushDown;
+extern bool isPushUp;
 
 enum Scene {
 	Start,
@@ -14,4 +14,6 @@ enum Scene {
 	Game,
 	End
 };
+
+void StartScene();
 

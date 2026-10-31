@@ -74,8 +74,5 @@
     <ClInclude Include="Scene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Start.h">
-      <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,5 +1,3 @@
-
-
 #include <cmath>
 #include "DxLib.h"
 #include "Game.h"
@@ -10,28 +8,27 @@
 #include "Player.h"
 
 // ---------------------------------
-// •Ï”‚ÌÀ‘Ì
+// ƒOƒ[ƒoƒ‹•Ï”‚ÌÀ‘Ì
 // ---------------------------------
 
-int SwordGraph = -1;
-int BackGround = -1;
-int Enemy_BIRD1 = -1;
-int Enemy_BIRD2 = -1;
-int Enemy_SKELETON1 = -1;
-int SwordEffect = -1;
+int SwordGraph;
+int BackGround;
+int Enemy_BIRD1;
+int Enemy_BIRD2;
+int Enemy_SKELETON1;
+int SwordEffect;
 
-int imgW = 0;
-int imgH = 0;
+int imgW, imgH;
 
 double bgX = 0.0;
 double scrollSpeed = 2.0;
 int screenWidth = 1300;
 
-int mouseX = 0;
-int mouseY = 0;
+int mouseX, mouseY;
 
 double enemyX = 1300.0;
 double enemyY = 300.0;
+
 double enemySpeed = 3.0;
 
 double currentX = 0.0;
