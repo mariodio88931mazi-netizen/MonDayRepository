@@ -15,6 +15,8 @@ void Enemy::Initialize(int graphHandle, int enemyHP,float startX, float startY, 
 
 void Enemy::Update()
 {
+	if (!alive) return;
+
 	//‰E•ûŒü‚ÉˆÚ“®
 	x += speed;
 
@@ -42,16 +44,6 @@ void Enemy::Draw()
 	);
 }
 
-float Enemy::GetX() const
-{
-	return static_cast<float>(x);
-}
-
-float Enemy::GetY() const
-{
-	return static_cast<float>(y);
-}
-
 void Enemy::TakeDamage(int damage)
 {
 	if (!alive)
@@ -69,4 +61,19 @@ void Enemy::TakeDamage(int damage)
 bool Enemy::IsAlive() const
 {
 	return alive;
+}
+
+float Enemy::GetX() const
+{
+	return static_cast<float>(x);
+}
+
+float Enemy::GetY() const
+{
+	return static_cast<float>(y);
+}
+
+float Enemy::GetRadius() const
+{
+	return 35.0f;
 }

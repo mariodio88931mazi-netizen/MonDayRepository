@@ -32,3 +32,21 @@ void StartScene()
         "Press ENTER to Start"
     );
 }
+
+void GameOver()
+{
+    // ÉQÅ[ÉÄâÊñ 
+    DrawExtendGraph(
+        static_cast<int>(0.0),
+        0,
+        static_cast<int>(1300),
+        720,
+        BackGround,
+        FALSE);
+
+    DrawFormatString(
+        525, 250,
+        GetColor(255, 0, 0),
+        "GAME OVER"
+    );
+}

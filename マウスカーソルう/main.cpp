@@ -29,6 +29,7 @@ int WINAPI WinMain(
 
     // true：タイトル画面、false：ゲーム画面
     bool isTitle = true;
+    bool isEnd = true;
     bool oldEnter = false;
 
     // メインループ
@@ -52,11 +53,16 @@ int WINAPI WinMain(
                 isTitle = false;
             }
         }
+        else if (isEnd)
+        {
+            GameOver();
+        }
         else
         {
             // ゲーム画面
             GameUpdate();
             GameDraw();
+
         }
 
         ScreenFlip();

@@ -6,6 +6,7 @@
 #include "Bird.h"
 #include "skeleton.h"
 #include "Player.h"
+#include "Scene.h"
 
 // ---------------------------------
 // グローバル変数の実体
@@ -44,6 +45,7 @@ double angle = 0.0;
 double counttime = 0.0;
 float addTime = 0.001f;
 
+int score = 0;
 // ---------------------------------
 // ゲーム内オブジェクト
 // ---------------------------------
@@ -145,7 +147,8 @@ bool GameInitialize()
         360.0f,
         0,
         0,
-        easing
+        easing,
+        true
     );
 
     birdEnemy.Initialize(
@@ -226,6 +229,46 @@ void GameUpdate()
             }
         }
     }
+
+    // プレイヤー更新
+    player.Update();
+
+    // 敵更新
+    birdEnemy.Update();
+
+    // 剣更新
+    sword.Update();
+
+
+    // プレイヤーと敵の距離を計算
+    float dx = player.GetX() - birdEnemy.GetX();
+    float dy = player.GetY() - birdEnemy.GetY();
+
+    float distance = sqrtf(dx * dx + dy * dy);
+
+
+    // 当たり判定
+    const float playerRadius = 10.0f;
+    const float enemyRadius = birdEnemy.GetRadius();
+
+    if (player.IsAlive() && birdEnemy.IsAlive())
+    {
+        if (!player.IsInvincible())
+        {
+            if (distance < playerRadius + enemyRadius)
+            {
+                // 10ダメージ
+                player.TakeDamage(10);
+               
+            }
+        }
+    }
+
+
+    // 描画
+    birdEnemy.Draw();
+    player.Draw();
+    sword.Draw();
 }
 
 // ---------------------------------

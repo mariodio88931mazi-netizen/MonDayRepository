@@ -17,3 +17,4 @@ enum Scene {
 
 void StartScene();
 
+void GameOver();

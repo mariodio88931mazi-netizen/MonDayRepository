@@ -45,6 +45,9 @@ extern double angle;
 extern double counttime;
 extern float addTime;
 
+// ÉXÉRÉA
+extern int score;
+
 void timer(bool stoptime, double maxTime);
 
 float PointToSegmentDistance(

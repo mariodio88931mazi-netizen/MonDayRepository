@@ -1,54 +1,123 @@
 #include "Player.h"
-#include "Dxlib.h"
+#include "DxLib.h"
 
-void Player::Initialize
-(
-	//int handgraph,
-	int hp,
-	int startx,
-	int starty,
-	int exp,
-	int level,
-	float moveEasing
+void Player::Initialize(
+    int hp,
+    int startx,
+    int starty,
+    int exp,
+    int level,
+    float moveEasing,
+    bool alivecheck
 )
 {
-	//graph = handgraph;
-	HP = hp;
-	EXP = exp;
-	Level = level;
-	X = startx;
-	Y = starty;
-	move = moveEasing;
+    HP = hp;
+    EXP = exp;
+    Level = level;
+
+    X = startx;
+    Y = starty;
+
+    targetX = startx;
+    targetY = starty;
+
+    move = moveEasing;
+    alive = alivecheck;
+
+    // 無敵時間の初期化
+    invincibleTimer = 0;
+    invincibleDuration = 60;
 }
 
 void Player::Update()
 {
-	int mouseX, mouseY;
+    if (!alive) return;
 
-	// マウスの現在位置を取得
-	GetMousePoint(&mouseX, &mouseY);
+    int mouseX, mouseY;
 
-	X += (mouseX - X) * move;
-	Y += (mouseY - Y) * move;
+    GetMousePoint(&mouseX, &mouseY);
+
+    X += (mouseX - X) * move;
+    Y += (mouseY - Y) * move;
+
+    // 無敵時間を減らす
+    if (invincibleTimer > 0)
+    {
+        invincibleTimer--;
+    }
 }
 
 void Player::Draw()
 {
-	// プレイヤーの座標を表示
-	DrawFormatString(
-		20, 50,
-		GetColor(255, 255, 255),
-		"X: %f  Y: %f",
-		X, Y
-	);
-	int Color = RGB(0, 0, 255);
+    if (!alive) return;
 
-	// 画面中央に赤い円を強制表示
-	DrawCircle(
-		X,
-		Y,
-		10,
-		Color,
-		TRUE
-	);
+    // 無敵中は点滅させる
+    if (invincibleTimer == 0 || invincibleTimer % 10 < 5)
+    {
+        int Color = GetColor(0, 0, 255);
+
+        DrawCircle(
+            static_cast<int>(X),
+            static_cast<int>(Y),
+            10,
+            Color,
+            TRUE
+        );
+    }
+
+    DrawFormatString(
+        20, 50,
+        GetColor(255, 255, 255),
+        "PLAYER HP : %d",
+        HP
+    );
+}
+
+void Player::TakeDamage(int damage)
+{
+    if (!alive || invincibleTimer > 0)
+    {
+        return;
+    }
+
+    HP -= damage;
+
+    if (HP <= 0)
+    {
+        HP = 0;
+        alive = false;
+    }
+
+    // 約1秒間無敵
+    invincibleTimer = invincibleDuration;
+}
+
+float Player::GetX() const
+{
+    return X;
+}
+
+float Player::GetY() const
+{
+    return Y;
+}
+
+int Player::GetHP() const
+{
+    return HP;
+}
+
+bool Player::IsAlive() const
+{
+    return alive;
+}
+
+bool Player::IsInvincible() const
+{
+    return invincibleTimer > 0;
+}
+
+void Player::HitCheck()
+{
+    // 今回はGame.cpp側で敵との接触判定を行う
 }

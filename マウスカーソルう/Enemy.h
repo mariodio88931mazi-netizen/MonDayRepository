@@ -18,6 +18,7 @@ protected:
 	// 敵の生死
 	bool alive;
 public:
+
 	//コンストラクタ
 	Enemy()
 	{
@@ -57,5 +58,7 @@ public:
 
 	//生きているか
 	bool IsAlive() const;
+
+	float GetRadius() const;
 };
 
