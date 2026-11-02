@@ -48,6 +48,14 @@ extern float addTime;
 // スコア
 extern int score;
 
+// エフェクト
+extern int effectTimer;
+
+extern float effectX;
+extern float effectY;
+
+// エフェクトの表示時間
+
 void timer(bool stoptime, double maxTime);
 
 float PointToSegmentDistance(

@@ -47,9 +47,17 @@ float addTime = 0.001f;
 
 bool gameOver = false;
 
-int score = 0;
-int* currHp;
-int playerHp;
+int score = 0; 
+
+// エフェクト
+int effectTimer = 0;
+
+float effectX = 0.0f;
+float effectY = 0.0f;
+
+// エフェクトの表示時間
+const int EFFECT_DISPLAY = 60;
+
 // ---------------------------------
 // ゲーム内オブジェクト
 // ---------------------------------
@@ -219,21 +227,23 @@ void GameUpdate()
             {
                 birdEnemy.TakeDamage(1);
 
-                // HIT表示
-                DrawFormatString(
-                    600, 600,
-                    GetColor(255, 0, 0),
-                    "HIT!"
-                );
 
-                sword.DrawEffect(
-                    birdEnemy.GetX(),
-                    birdEnemy.GetY(),
-                    1.0f,
-                    SwordEffect
-                );
+                // エフェクトの位置を記録
+                effectX = birdEnemy.GetX();
+				effectY = birdEnemy.GetY();
+
+				// エフェクトタイマーをリセット
+                effectTimer = EFFECT_DISPLAY;
+
+            
 
                 WaitTimer(10);
+            }
+
+            // エフェクトの表示時間を減らす
+            if (effectTimer > 0)
+            {
+                effectTimer--;
             }
         }
     }
@@ -313,6 +323,24 @@ void GameDraw()
     birdEnemy.Draw();
     sword.Draw();
     player.Draw();
+
+    // エフェクトを表示
+    if (effectTimer > 0)
+    {
+        sword.DrawEffect(
+            effectX,
+            effectY,
+            1.0f,
+            SwordEffect
+        );
+
+        // HIT表示
+        DrawFormatString(
+            600, 600,
+            GetColor(255, 0, 0),
+            "HIT!"
+        );
+    }
 }
 
 // ---------------------------------
