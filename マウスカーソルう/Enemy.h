@@ -1,64 +1,49 @@
 #pragma once
-#include "Sword.h"
 
 class Enemy
 {
 protected:
-	//敵のHP
-	int hp;
-	// 敵の座標
-	double y;
-	double x;
-	// 敵の速度
-	double speed;
-	// 敵の見た目
-	int graph;
-	// 拡大率
-	float scale;
-	// 敵の生死
-	bool alive;
+    int hp;
+    double y;
+    double x;
+    double speed;
+    int graph;
+    float scale;
+    bool alive;
+
 public:
+    Enemy()
+    {
+        hp = 0;
+        x = 0.0f;
+        y = 0.0f;
+        speed = 0.0f;
+        graph = -1;
+        scale = 1.0f;
+        alive = false;
+    }
 
-	//コンストラクタ
-	Enemy()
-	{
-		hp = 0;
-		x = 0.0f;
-		y = 0.0f;
-		speed = 0.0f;
-		graph = -1;
-		scale = 1.0f;
-		alive = false;
-	}
+    virtual ~Enemy() {}
 
-	//デストラクタ
-	virtual ~Enemy() {}
+    virtual void Initialize(
+        int graphHandle,
+        int enemyHP,
+        float startX,
+        float startY,
+        float moveSpeed,
+        float exRate,
+        bool initialAlive
+    );
 
-	//初期化
-	virtual void Initialize(int graphHandle, int enemyHP,float sstartX, float startY, float movespeed, float exRate, bool initialAlive);
+    // virtualを追加
+    virtual void Update();
+    virtual void Draw();
 
-	//// 死亡
-	//virtual void Die();
-	//{
-	//	sword->levelUp(1); // 経験値を1増やす
-	//}
+    virtual float GetX() const;
+    virtual float GetY() const;
 
-	//敵の移動
-	void Update();
+    virtual void TakeDamage(int damage);
 
-	//てきの描画
-	void Draw();
-
-	//座標取得(当たり判定用)
-	virtual float GetX() const;
-	virtual float GetY() const;
-
-	//ダメージを受ける
-	virtual void TakeDamage(int damage);
-
-	//生きているか
-	bool IsAlive() const;
-
-	float GetRadius() const;
+    bool IsAlive() const;
+    float GetRadius() const;
 };
-

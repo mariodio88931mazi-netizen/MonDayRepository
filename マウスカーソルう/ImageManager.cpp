@@ -4,7 +4,9 @@
 // 画像ハンドル
 int SwordGraph;
 int BackGround;
-int Enemy_BIRD1;
+
+const int BIRD_MAX = 1;
+int Enemy_BIRD[BIRD_MAX];
 
 const int EFFECT_MAX = 5;
 int effectGraph[EFFECT_MAX];
@@ -14,7 +16,24 @@ bool ImageManager::Initialize()
 {
     SwordGraph = LoadGraph("img/sord.png");
     BackGround = LoadGraph("img/BackGround.png");
-    Enemy_BIRD1 = LoadGraph("img/enemy/bird1.png");
+    // 鳥画像
+    for (int i = 0; i < BIRD_MAX; i++)
+    {
+        char fileName[100];
+
+        sprintf_s(
+            fileName,
+            "img/enemy/BIRD%d.png",
+            i
+        );
+
+        Enemy_BIRD[i] = LoadGraph(fileName);
+
+        if (Enemy_BIRD[i] == -1)
+        {
+            return false;
+        }
+    }
 
     // エフェクト画像
     for (int i = 0; i < EFFECT_MAX; i++)
@@ -43,7 +62,11 @@ void ImageManager::Finalize()
 {
     DeleteGraph(SwordGraph);
     DeleteGraph(BackGround);
-    DeleteGraph(Enemy_BIRD1);
+
+    for (int i = 0; i < BIRD_MAX; i++)
+    {
+        DeleteGraph(Enemy_BIRD[i]);
+    }
 
     for (int i = 0; i < EFFECT_MAX; i++)
     {
@@ -61,9 +84,13 @@ int ImageManager::GetBackGround()
     return BackGround;
 }
 
-int ImageManager::GetBirdGraph()
+int ImageManager::GetBirdGraph(int index)
 {
-    return Enemy_BIRD1;
+	if (index < 0 || index >= BIRD_MAX)
+	{
+		return -1;
+	}
+	return Enemy_BIRD[index];
 }
 
 int ImageManager::GetEffectGraph(int index)

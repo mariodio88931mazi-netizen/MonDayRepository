@@ -1,17 +1,23 @@
 #pragma once
 #include "Enemy.h"
+
 class Bird : public Enemy
 {
 public:
-	// ‰æ‘œ“Ç‚İ‚İ
-	int Enemy_BIRD1;
-	int Enemy_BIRD2;
+    int birdGraph[2];
 
-	Bird();
-	~Bird() {}
+    int animationFrame;
+    int animationTimer;
 
-	float GetX() const override;
-	float GetY() const override;
+    Bird();
 
-	void TakeDamage(int damage) override;
+    void SetAnimationGraphs(int graph1, int graph2);
+
+    void Update() override;
+    void Draw() override;
+
+    float GetX() const override;
+    float GetY() const override;
+
+    void TakeDamage(int damage) override;
 };

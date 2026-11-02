@@ -48,7 +48,7 @@ const int EFFECT_SPEED = 5;
 
 int effectFrame = 0;     // 現在の画像番号
 int effectCount = 0;     // コマ切り替え用
-bool effectActive = false;
+bool GraphActive = false;
 
 float effectX = 0.0f;
 float effectY = 0.0f;
@@ -118,57 +118,72 @@ namespace
 // ゲーム初期化
 // ---------------------------------
 
-bool GameInitialize()
-{
-    gameOver = false;
+    bool GameInitialize()
+    {
+        gameOver = false;
 
-    // 画像読み込み
-	ImageManager::Initialize();
+        // 画像読み込み
+        if (!ImageManager::Initialize())
+        {
+            return false;
+        }
 
-    // 剣の画像サイズ
-    GetGraphSize(SwordGraph, &imgW, &imgH);
+        // 剣の画像サイズ
+        GetGraphSize(
+            ImageManager::GetSwordGraph(),
+            &imgW,
+            &imgH
+        );
 
-    // 剣・プレイヤー初期化
-    sword.Initialize(
-        SwordGraph,
-        640.0f,
-        360.0f,
-        angle,
-        exRate,
-        easing,
-        false
-    );
+        // 剣の初期化
+        sword.Initialize(
+            ImageManager::GetSwordGraph(),
+            640.0f,
+            360.0f,
+            angle,
+            exRate,
+            easing,
+            false
+        );
 
-    player.Initialize(
-        10,
-        640.0f,
-        360.0f,
-        0,
-        1,
-        easing,
-        true
-    );
+        // プレイヤーの初期化
+        player.Initialize(
+            10,
+            640.0f,
+            360.0f,
+            0,
+            1,
+            easing,
+            true
+        );
 
-    birdEnemy.Initialize(
-        Enemy_BIRD1,
-        3,
-        -100.0f,
-        300.0f,
-        3.0f,
-        0.2f,
-        true
-    );
-    bgX = 0.0f;
+        // 鳥の初期化
+        birdEnemy.Initialize(
+            ImageManager::GetBirdGraph(0),
+            3,
+            -100.0f,
+            300.0f,
+            3.0f,
+            0.2f,
+            true
+        );
 
-    return true;
+        // 鳥のアニメーション画像を設定
+        birdEnemy.SetAnimationGraphs(
+            ImageManager::GetBirdGraph(0),
+            ImageManager::GetBirdGraph(1)
+        );
 
-    // エフェクトの初期状態
-    effectFrame = 0;
-    effectCount = 0;
-    effectActive = false;
-    effectHitThisAttack = false;
-}
+        bgX = 0.0;
 
+        // エフェクトの初期状態
+        effectFrame = 0;
+        effectCount = 0;
+        GraphActive = false;
+        effectHitThisAttack = false;
+
+        return true;
+    }
 // ---------------------------------
 // ゲーム更新
 // ---------------------------------
@@ -200,7 +215,7 @@ void GameUpdate()
     // エフェクトアニメーション更新
     // ---------------------------------
 
-    if (effectActive)
+    if (GraphActive)
     {
         effectCount++;
 
@@ -213,7 +228,7 @@ void GameUpdate()
             // 最後の画像まで再生したら終了
             if (effectFrame >= ImageManager::GetEffectMax())
             {
-                effectActive = false;
+                GraphActive = false;
             }
         }
     }
@@ -261,7 +276,7 @@ void GameUpdate()
                 // アニメーションを最初から再生
                 effectFrame = 0;
                 effectCount = 0;
-                effectActive = true;
+                GraphActive = true;
 
                 // この攻撃では再発生させない
                 effectHitThisAttack = true;
@@ -332,10 +347,8 @@ void GameDraw()
     player.Draw();
 
     // エフェクトを表示
-    if (effectActive)
+    if (GraphActive)
     {
-        DrawFormatString(700, 600, GetColor(255, 255, 255), "x: %f, y: %f", effectX, effectY);
-
         DrawRotaGraph(
             (int)effectX,
             (int)effectY,

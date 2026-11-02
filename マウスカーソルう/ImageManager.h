@@ -10,7 +10,7 @@ public:
 
 	static int GetSwordGraph();
 	static int GetBackGround();
-	static int GetBirdGraph();
+	static int GetBirdGraph(int index);
 	static int GetEffectGraph(int index);
 	static int GetEffectMax();
 };
