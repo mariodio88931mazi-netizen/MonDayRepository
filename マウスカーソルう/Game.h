@@ -62,3 +62,5 @@ void GameUpdate();
 void GameDraw();
 
 void GameFinalize();
+
+bool IsGameOver();

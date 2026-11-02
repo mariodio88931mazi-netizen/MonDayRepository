@@ -45,6 +45,8 @@ double angle = 0.0;
 double counttime = 0.0;
 float addTime = 0.001f;
 
+bool gameOver = false;
+
 int score = 0;
 int* currHp;
 int playerHp;
@@ -112,6 +114,8 @@ namespace
 
 bool GameInitialize()
 {
+    gameOver = false;
+
     // âÊëúì«Ç›çûÇ›
     SwordGraph = LoadGraph("img/sord.png");
     BackGround = LoadGraph("img/BackGround.png");
@@ -148,7 +152,7 @@ bool GameInitialize()
         640.0f,
         360.0f,
         0,
-        0,
+        1,
         easing,
         true
     );
@@ -173,7 +177,7 @@ bool GameInitialize()
 
 void GameUpdate()
 {
-
+    if (gameOver) return;
 
     // îwåiÉXÉNÉçÅ[Éã
     bgX += scrollSpeed;
@@ -231,11 +235,6 @@ void GameUpdate()
 
                 WaitTimer(10);
             }
-
-            if (!player.IsAlive())
-            {
-                gameor
-            }
         }
     }
 
@@ -273,6 +272,10 @@ void GameUpdate()
         }
     }
 
+    if (!player.IsAlive())
+    {
+        gameOver = true;
+    }
 
     // ï`âÊ
     birdEnemy.Draw();
@@ -322,4 +325,10 @@ void GameFinalize()
     DeleteGraph(BackGround);
     DeleteGraph(SwordEffect);
     DeleteGraph(Enemy_SKELETON1);
+}
+
+// éÊìæä÷êî
+bool IsGameOver()
+{
+    return gameOver;
 }
