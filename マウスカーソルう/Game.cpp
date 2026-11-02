@@ -7,17 +7,11 @@
 #include "skeleton.h"
 #include "Player.h"
 #include "Scene.h"
+#include "ImageManager.h"
 
 // ---------------------------------
 // グローバル変数の実体
 // ---------------------------------
-
-int SwordGraph;
-int BackGround;
-int Enemy_BIRD1;
-int Enemy_BIRD2;
-int Enemy_SKELETON1;
-int SwordEffect;
 
 int imgW, imgH;
 
@@ -50,10 +44,7 @@ bool gameOver = false;
 int score = 0; 
 
 // エフェクトアニメーション
-const int EFFECT_MAX = 5;
 const int EFFECT_SPEED = 5;
-
-int effectGraph[EFFECT_MAX];
 
 int effectFrame = 0;     // 現在の画像番号
 int effectCount = 0;     // コマ切り替え用
@@ -132,51 +123,7 @@ bool GameInitialize()
     gameOver = false;
 
     // 画像読み込み
-    SwordGraph = LoadGraph("img/sord.png");
-    BackGround = LoadGraph("img/BackGround.png");
-    Enemy_BIRD1 = LoadGraph("img/enemy/bird1.png");
-
-    // エフェクト画像読み込み
-    for (int i = 0; i < EFFECT_MAX; i++)
-    {
-        char fileName[100];
-
-        sprintf_s(
-            fileName,
-            "img/effect/swordeffect%d.png",
-            i
-        );
-
-        effectGraph[i] = LoadGraph(fileName);
-
-        // 読み込み失敗を確認
-        if (effectGraph[i] == -1)
-        {
-            MessageBox(
-                NULL,
-                fileName,
-                "画像読み込みエラー",
-                MB_OK
-            );
-
-            return false;
-        }
-    }
-
-    // その他の画像読み込み確認
-    if (SwordGraph == -1 ||
-        BackGround == -1 ||
-        Enemy_BIRD1 == -1)
-    {
-        MessageBox(
-            NULL,
-            "剣・背景・敵の画像が読み込めませんでした。",
-            "画像読み込みエラー",
-            MB_OK
-        );
-
-        return false;
-    }
+	ImageManager::Initialize();
 
     // 剣の画像サイズ
     GetGraphSize(SwordGraph, &imgW, &imgH);
@@ -264,7 +211,7 @@ void GameUpdate()
             effectFrame++;
 
             // 最後の画像まで再生したら終了
-            if (effectFrame >= EFFECT_MAX)
+            if (effectFrame >= ImageManager::GetEffectMax())
             {
                 effectActive = false;
             }
@@ -394,17 +341,18 @@ void GameDraw()
             (int)effectY,
             1.0,
             0.0,
-            effectGraph[effectFrame],
+            ImageManager::GetEffectGraph(effectFrame),
             TRUE
-        );
-    }
-
-    // HIT表示
+        ); 
+        // HIT表示
     DrawFormatString(
         600, 600,
         GetColor(255, 0, 0),
         "HIT!"
         );
+    }
+
+  
 }
 
 // ---------------------------------
@@ -413,16 +361,7 @@ void GameDraw()
 
 void GameFinalize()
 {
-    DeleteGraph(SwordGraph);
-    DeleteGraph(BackGround);
-
-    for (int i = 0; i < EFFECT_MAX; i++)
-    {
-        if (effectGraph[i] != -1)
-        {
-            DeleteGraph(effectGraph[i]);
-        }
-    }
+    ImageManager::Finalize();
 }
 
 // 取得関数

@@ -55,8 +55,7 @@ void Player::Draw()
     // –³“G’†‚Í“_–Å‚³‚¹‚é
     if (invincibleTimer == 0 || invincibleTimer % 10 < 5)
     {
-        int Color = GetColor(0, 0, 255);
-
+        int Color = GetColor(255, 0, 0);
         DrawCircle(
             static_cast<int>(X),
             static_cast<int>(Y),
