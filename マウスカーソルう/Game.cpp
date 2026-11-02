@@ -49,14 +49,21 @@ bool gameOver = false;
 
 int score = 0; 
 
-// エフェクト
-int effectTimer = 0;
+// エフェクトアニメーション
+const int EFFECT_MAX = 5;
+const int EFFECT_SPEED = 5;
+
+int effectGraph[EFFECT_MAX];
+
+int effectFrame = 0;     // 現在の画像番号
+int effectCount = 0;     // コマ切り替え用
+bool effectActive = false;
 
 float effectX = 0.0f;
 float effectY = 0.0f;
 
-// エフェクトの表示時間
-const int EFFECT_DISPLAY = 60;
+bool effectHitThisAttack = false; // 1回の攻撃でエフェクトがヒットしたかどうかを追跡するフラグ
+
 
 // ---------------------------------
 // ゲーム内オブジェクト
@@ -127,17 +134,47 @@ bool GameInitialize()
     // 画像読み込み
     SwordGraph = LoadGraph("img/sord.png");
     BackGround = LoadGraph("img/BackGround.png");
-    SwordEffect = LoadGraph("img/effect/swordeffect.png");
-    Enemy_SKELETON1 = LoadGraph("img/enemy/skeleton1.png");
-    Enemy_BIRD1 = LoadGraph("img/enemy/BIRD1.png");
+    Enemy_BIRD1 = LoadGraph("img/enemy/bird1.png");
 
-    // 読み込み失敗確認
+    // エフェクト画像読み込み
+    for (int i = 0; i < EFFECT_MAX; i++)
+    {
+        char fileName[100];
+
+        sprintf_s(
+            fileName,
+            "img/effect/swordeffect%d.png",
+            i
+        );
+
+        effectGraph[i] = LoadGraph(fileName);
+
+        // 読み込み失敗を確認
+        if (effectGraph[i] == -1)
+        {
+            MessageBox(
+                NULL,
+                fileName,
+                "画像読み込みエラー",
+                MB_OK
+            );
+
+            return false;
+        }
+    }
+
+    // その他の画像読み込み確認
     if (SwordGraph == -1 ||
         BackGround == -1 ||
-        SwordEffect == -1 ||
-        Enemy_SKELETON1 == -1 ||
         Enemy_BIRD1 == -1)
     {
+        MessageBox(
+            NULL,
+            "剣・背景・敵の画像が読み込めませんでした。",
+            "画像読み込みエラー",
+            MB_OK
+        );
+
         return false;
     }
 
@@ -167,7 +204,7 @@ bool GameInitialize()
 
     birdEnemy.Initialize(
         Enemy_BIRD1,
-        50,
+        3,
         -100.0f,
         300.0f,
         3.0f,
@@ -177,6 +214,12 @@ bool GameInitialize()
     bgX = 0.0f;
 
     return true;
+
+    // エフェクトの初期状態
+    effectFrame = 0;
+    effectCount = 0;
+    effectActive = false;
+    effectHitThisAttack = false;
 }
 
 // ---------------------------------
@@ -187,27 +230,64 @@ void GameUpdate()
 {
     if (gameOver) return;
 
+    // ---------------------------------
     // 背景スクロール
+    // ---------------------------------
+
     bgX += scrollSpeed;
 
     if (bgX >= screenWidth)
     {
-        bgX = 0.0f;
+        bgX = 0.0;
     }
 
-    // 敵・剣・プレイヤー更新
+    // ---------------------------------
+    // オブジェクト更新
+    // ---------------------------------
+
     birdEnemy.Update();
     sword.Update();
     player.Update();
 
-    // 剣の攻撃判定
-    if (sword.GetAttack() == true)
-    {
-        float startX, startY;
-        float endX, endY;
+    // ---------------------------------
+    // エフェクトアニメーション更新
+    // ---------------------------------
 
+    if (effectActive)
+    {
+        effectCount++;
+
+        // 5フレームごとに次の画像へ
+        if (effectCount >= EFFECT_SPEED)
+        {
+            effectCount = 0;
+            effectFrame++;
+
+            // 最後の画像まで再生したら終了
+            if (effectFrame >= EFFECT_MAX)
+            {
+                effectActive = false;
+            }
+        }
+    }
+
+    // ---------------------------------
+    // 剣の攻撃判定
+    // ---------------------------------
+
+    // 攻撃が終わったら次の攻撃を許可
+    if (!sword.GetAttack())
+    {
+        effectHitThisAttack = false;
+    }
+
+    if (sword.GetAttack() && !effectHitThisAttack)
+    {
         if (birdEnemy.IsAlive())
         {
+            float startX, startY;
+            float endX, endY;
+
             sword.GetSwordSegment(
                 startX, startY,
                 endX, endY
@@ -227,45 +307,30 @@ void GameUpdate()
             {
                 birdEnemy.TakeDamage(1);
 
-
-                // エフェクトの位置を記録
+                // エフェクトの位置を保存
                 effectX = birdEnemy.GetX();
-				effectY = birdEnemy.GetY();
+                effectY = birdEnemy.GetY();
 
-				// エフェクトタイマーをリセット
-                effectTimer = EFFECT_DISPLAY;
+                // アニメーションを最初から再生
+                effectFrame = 0;
+                effectCount = 0;
+                effectActive = true;
 
-            
-
-                WaitTimer(10);
-            }
-
-            // エフェクトの表示時間を減らす
-            if (effectTimer > 0)
-            {
-                effectTimer--;
+                // この攻撃では再発生させない
+                effectHitThisAttack = true;
             }
         }
     }
 
-    // プレイヤー更新
-    player.Update();
+    // ---------------------------------
+    // プレイヤーと敵の接触判定
+    // ---------------------------------
 
-    // 敵更新
-    birdEnemy.Update();
-
-    // 剣更新
-    sword.Update();
-
-
-    // プレイヤーと敵の距離を計算
     float dx = player.GetX() - birdEnemy.GetX();
     float dy = player.GetY() - birdEnemy.GetY();
 
     float distance = sqrtf(dx * dx + dy * dy);
 
-
-    // 当たり判定
     const float playerRadius = 10.0f;
     const float enemyRadius = birdEnemy.GetRadius();
 
@@ -275,9 +340,7 @@ void GameUpdate()
         {
             if (distance < playerRadius + enemyRadius)
             {
-                // 10ダメージ
-                player.TakeDamage(1);
-               
+                player.TakeDamage(2);
             }
         }
     }
@@ -287,10 +350,6 @@ void GameUpdate()
         gameOver = true;
     }
 
-    // 描画
-    birdEnemy.Draw();
-    player.Draw();
-    sword.Draw();
 }
 
 // ---------------------------------
@@ -299,6 +358,7 @@ void GameUpdate()
 
 void GameDraw()
 {
+
     // 背景1枚目
     DrawExtendGraph(
         static_cast<int>(bgX),
@@ -325,22 +385,26 @@ void GameDraw()
     player.Draw();
 
     // エフェクトを表示
-    if (effectTimer > 0)
+    if (effectActive)
     {
-        sword.DrawEffect(
-            effectX,
-            effectY,
-            1.0f,
-            SwordEffect
-        );
+        DrawFormatString(700, 600, GetColor(255, 255, 255), "x: %f, y: %f", effectX, effectY);
 
-        // HIT表示
-        DrawFormatString(
-            600, 600,
-            GetColor(255, 0, 0),
-            "HIT!"
+        DrawRotaGraph(
+            (int)effectX,
+            (int)effectY,
+            1.0,
+            0.0,
+            effectGraph[effectFrame],
+            TRUE
         );
     }
+
+    // HIT表示
+    DrawFormatString(
+        600, 600,
+        GetColor(255, 0, 0),
+        "HIT!"
+        );
 }
 
 // ---------------------------------
@@ -351,8 +415,14 @@ void GameFinalize()
 {
     DeleteGraph(SwordGraph);
     DeleteGraph(BackGround);
-    DeleteGraph(SwordEffect);
-    DeleteGraph(Enemy_SKELETON1);
+
+    for (int i = 0; i < EFFECT_MAX; i++)
+    {
+        if (effectGraph[i] != -1)
+        {
+            DeleteGraph(effectGraph[i]);
+        }
+    }
 }
 
 // 取得関数

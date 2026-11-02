@@ -93,18 +93,7 @@ void Sword::Update()
 		}
 		
 	}
-	// デバッグ
-	if (CheckHitKey(KEY_INPUT_B))
-	{
-		//剣関係
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "x: %f, y: %f", x, y);
-		DrawFormatString(0, 20, GetColor(255, 255, 255), "angle: %f", angle * 180.0f / DX_PI_F);
-		DrawFormatString(0, 40, GetColor(255, 255, 255), "targetAngle: %f", targetAngle * 180.0f / DX_PI_F);
-		DrawFormatString(0, 60, GetColor(255, 255, 255), "angleDifference: %f", angleDifference * 180.0f / DX_PI_F);
-		DrawFormatString(0, 80, GetColor(255, 255, 255), "mouseX: %d, mouseY: %d", mouseX, mouseY);
 
-		DrawFormatString(0, 100, GetColor(255, 255, 255), "攻撃フラグ: %d", attack);
-	}
 }
 float Sword::GetAttack() const
 {

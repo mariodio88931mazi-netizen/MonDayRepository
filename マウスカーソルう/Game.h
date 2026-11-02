@@ -48,9 +48,7 @@ extern float addTime;
 // スコア
 extern int score;
 
-// エフェクト
-extern int effectTimer;
-
+// エフェク
 extern float effectX;
 extern float effectY;
 
