@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "DxLib.h"
+#include "Game.h"
 
 void Player::Initialize(
     int hp,

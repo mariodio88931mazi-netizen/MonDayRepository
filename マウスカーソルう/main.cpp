@@ -43,6 +43,8 @@ int WINAPI WinMain(
         bool enterPressed = enter && !oldEnter;
         oldEnter = enter;
 
+       
+
         if (isTitle)
         {
             StartScene();

@@ -30,7 +30,7 @@ int mouseX, mouseY;
 double enemyX = 1300.0;
 double enemyY = 300.0;
 
-double enemySpeed = 3.0;
+double enemySpeed = 1.0;
 
 double currentX = 0.0;
 double currentY = 0.0;
@@ -46,6 +46,8 @@ double counttime = 0.0;
 float addTime = 0.001f;
 
 int score = 0;
+int* currHp;
+int playerHp;
 // ---------------------------------
 // ゲーム内オブジェクト
 // ---------------------------------
@@ -171,6 +173,8 @@ bool GameInitialize()
 
 void GameUpdate()
 {
+
+
     // 背景スクロール
     bgX += scrollSpeed;
 
@@ -227,6 +231,11 @@ void GameUpdate()
 
                 WaitTimer(10);
             }
+
+            if (!player.IsAlive())
+            {
+                gameor
+            }
         }
     }
 
@@ -258,7 +267,7 @@ void GameUpdate()
             if (distance < playerRadius + enemyRadius)
             {
                 // 10ダメージ
-                player.TakeDamage(10);
+                player.TakeDamage(1);
                
             }
         }
