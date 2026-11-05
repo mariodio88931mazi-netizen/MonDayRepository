@@ -5,10 +5,10 @@ using namespace std;
 
 Bird::Bird()
 {
-    graph = -1;
+    graph = 0;
 
-    birdGraph[0] = -1;
-    birdGraph[1] = -1;
+    birdGraph[0] = 0;
+    birdGraph[1] = 0;
 
     hp = 50;
     x = -100.0f;

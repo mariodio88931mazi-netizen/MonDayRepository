@@ -5,7 +5,7 @@
 int SwordGraph;
 int BackGround;
 
-const int BIRD_MAX = 1;
+const int BIRD_MAX = 2;
 int Enemy_BIRD[BIRD_MAX];
 
 const int EFFECT_MAX = 5;
