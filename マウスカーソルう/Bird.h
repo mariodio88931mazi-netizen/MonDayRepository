@@ -19,5 +19,5 @@ public:
     float GetX() const override;
     float GetY() const override;
 
-    void TakeDamage(int damage) override;
+    int TakeDamage(int damage) override;
 };

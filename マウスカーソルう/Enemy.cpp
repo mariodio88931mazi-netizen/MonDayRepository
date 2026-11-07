@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "DxLib.h"
 #include <iostream>
+#include "DamageText.h"
 
 void Enemy::Initialize(int graphHandle, int enemyHP,float startX, float startY, float moveSpeed, float exRate, bool initialAlive)
 {
@@ -43,19 +44,30 @@ void Enemy::Draw()
 		TRUE
 	);
 }
-
-void Enemy::TakeDamage(int damage)
+int Enemy::TakeDamage(int damage)
 {
-	if (!alive)
+	if (!alive || damage <= 0)
 	{
-		return;
+		return 0;
 	}
-	hp -= damage;
+
+	int actualDamage = damage;
+
+	// Žc‚èHPˆÈã‚Í•\‹L‚µ‚È‚¢
+	if (actualDamage > hp)
+	{
+		actualDamage = hp;
+	}
+
+	hp -= actualDamage;
+
 	if (hp <= 0)
 	{
 		hp = 0;
 		alive = false;
 	}
+
+	return actualDamage;
 }
 
 bool Enemy::IsAlive() const

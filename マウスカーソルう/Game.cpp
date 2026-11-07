@@ -1,4 +1,6 @@
 #include <cmath>
+#include <vector>
+#include <algorithm>
 #include "DxLib.h"
 #include "Game.h"
 #include "Enemy.h"
@@ -8,10 +10,13 @@
 #include "Player.h"
 #include "Scene.h"
 #include "ImageManager.h"
+#include "DamageText.h"
 
 // ---------------------------------
 // グローバル変数の実体
 // ---------------------------------
+// ダメージ表示
+std::vector<DamageText> damageTexts;
 
 int imgW, imgH;
 
@@ -148,13 +153,14 @@ namespace
 
         // プレイヤーの初期化
         player.Initialize(
-            10,
-            640.0f,
-            360.0f,
-            0,
-            1,
-            easing,
-            true
+            10,//hp
+            640.0f,//ｘ
+            360.0f,//ｙ
+            0,//exp
+            1,//レベル
+            1,//攻撃力
+            easing,//移動ヌルヌル度
+            true//生きてるか
         );
 
         // 鳥の初期化
@@ -181,6 +187,9 @@ namespace
         effectCount = 0;
         GraphActive = false;
         effectHitThisAttack = false;
+
+        // ダメージ表記の初期化
+        damageTexts.clear();
 
         return true;
     }
@@ -267,11 +276,21 @@ void GameUpdate()
 
             if (distance <= enemyRadius + swordRadius)
             {
-                birdEnemy.TakeDamage(1);
+                // 敵にダメージを与える
+                int actualDamage = birdEnemy.TakeDamage(player.GetAttackPower());
 
-                // エフェクトの位置を保存
-                effectX = birdEnemy.GetX();
-                effectY = birdEnemy.GetY();
+                // ダメージ表示を登録
+                if (actualDamage > 0)
+                {
+                    DamageText text;
+
+                    text.damage = actualDamage;
+                    text.x = birdEnemy.GetX();
+                    text.y = birdEnemy.GetY() - 60;
+                    text.startTime = GetNowCount();
+
+                    damageTexts.push_back(text);
+                }
 
                 // アニメーションを最初から再生
                 effectFrame = 0;
@@ -302,7 +321,21 @@ void GameUpdate()
         {
             if (distance < playerRadius + enemyRadius)
             {
-                player.TakeDamage(2);
+                int actualDamage = player.TakeDamage(2);
+
+                // 実際にダメージを受けた場合だけ表示
+                if (actualDamage > 0)
+                {
+                    DamageText text;
+
+                    text.Initialize(
+                        actualDamage,
+                        player.GetX(),
+                        player.GetY() - 40
+                    );
+
+                    damageTexts.push_back(text);
+                }
             }
         }
     }
@@ -312,6 +345,24 @@ void GameUpdate()
         gameOver = true;
     }
 
+    // ダメージ表示の更新
+    for (auto& text : damageTexts)
+    {
+        text.Update();
+    }
+
+    // 表示時間が終わったものを削除
+    damageTexts.erase(
+        std::remove_if(
+            damageTexts.begin(),
+            damageTexts.end(),
+            [](DamageText& text)
+            {
+                return !text.IsActive();
+            }
+        ),
+        damageTexts.end()
+    );
 }
 
 // ---------------------------------
@@ -365,7 +416,11 @@ void GameDraw()
         );
     }
 
-  
+    // ダメージ表記
+    for (auto& text : damageTexts)
+    {
+        text.Draw();
+    }
 }
 
 // ---------------------------------

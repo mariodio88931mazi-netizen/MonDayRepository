@@ -71,17 +71,9 @@ float Bird::GetY() const
     return Enemy::GetY();
 }
 
-void Bird::TakeDamage(int damage)
+int Bird::TakeDamage(int damage)
 {
-    if (!alive) return;
-
-    hp -= damage;
-
-    if (hp <= 0)
-    {
-        hp = 0;
-        alive = false;
-    }
+    return Enemy::TakeDamage(damage);
 }
 
 // ‰æ‘œ‚ðÝ’è‚·‚é

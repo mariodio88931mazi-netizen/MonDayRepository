@@ -20,13 +20,18 @@ void Sword::Initialize(
 	x = startX;
 	y = startY;
 
+	oldX = startX;
+	oldY = startY;
+
 	angle = startAngle;
 	targetAngle = startAngle;
 	rotationSpeed = 0.08f;
 	scale = exRate;
 
-	easing = moveEasing;
+	velocity = 0.0f;
+	attackSpeed = 10.0f;
 
+	easing = moveEasing;
 	attack = isAttacking;
 }
 
@@ -42,6 +47,7 @@ void Sword::Update()
 	// 剣の位置
 	x += (mouseX - x) * easing;
 	y += (mouseY - y) * easing;
+
 
 	// マウスの方向を計算
 	float dx = mouseX - x;
@@ -89,7 +95,26 @@ void Sword::Update()
 	{
 		if (true)
 		{
-			attack = false;
+			// 前のフレームからの移動距離を計算
+			float dx = x - oldX;
+			float dy = y - oldY;
+
+			// 移動速度を計算
+			velocity = sqrtf(dx * dx + dy * dy);
+
+			// 攻撃判定
+			if (velocity >= attackSpeed)
+			{
+				attack = true;
+			}
+			else
+			{
+				attack = false;
+			}
+
+			// 現在位置を保存
+			oldX = x;
+			oldY = y;
 		}
 		
 	}

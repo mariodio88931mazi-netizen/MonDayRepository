@@ -1,7 +1,5 @@
 #pragma once
 #include "DxLib.h"
-
-
 // ‰æ‘œŠeŽí
 extern int SwordGraph;
 extern int BackGround;

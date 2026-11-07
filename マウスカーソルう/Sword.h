@@ -15,6 +15,11 @@ private:
     float easing;       // 移動のなめらかさ
 	bool attack;        // 攻撃中かどうかのフラグ
 
+    float oldX;
+    float oldY;
+
+    float velocity;       // 剣の移動速度
+    float attackSpeed;    // 攻撃判定が出る速
 public:
     // 初期化
     void Initialize(

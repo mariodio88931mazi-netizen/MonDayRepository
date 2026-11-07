@@ -8,6 +8,7 @@ void Player::Initialize(
     int starty,
     int exp,
     int level,
+    int AttackPowor,
     float moveEasing,
     bool alivecheck
 )
@@ -15,6 +16,7 @@ void Player::Initialize(
     HP = hp;
     EXP = exp;
     Level = level;
+    Powor = AttackPowor;
 
     X = startx;
     Y = starty;
@@ -73,14 +75,23 @@ void Player::Draw()
     );
 }
 
-void Player::TakeDamage(int damage)
+int Player::TakeDamage(int damage)
 {
-    if (!alive || invincibleTimer > 0)
+    // Ž€–S’†E–³“G’†Eƒ_ƒ[ƒW0ˆÈ‰º‚È‚ç‰½‚à‚µ‚È‚¢
+    if (!alive || invincibleTimer > 0 || damage <= 0)
     {
-        return;
+        return 0;
     }
 
-    HP -= damage;
+    int actualDamage = damage;
+
+    // HPˆÈã‚Ìƒ_ƒ[ƒW‚ðŽó‚¯‚½ê‡
+    if (actualDamage > HP)
+    {
+        actualDamage = HP;
+    }
+
+    HP -= actualDamage;
 
     if (HP <= 0)
     {
@@ -90,6 +101,8 @@ void Player::TakeDamage(int damage)
 
     // –ñ1•bŠÔ–³“G
     invincibleTimer = invincibleDuration;
+
+    return actualDamage;
 }
 
 float Player::GetX() const
@@ -105,6 +118,11 @@ float Player::GetY() const
 int Player::GetHP() const
 {
     return HP;
+}
+
+int Player::GetAttackPower() const
+{
+    return Powor;
 }
 
 bool Player::IsAlive() const

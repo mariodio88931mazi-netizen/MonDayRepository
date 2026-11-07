@@ -42,7 +42,7 @@ public:
     virtual float GetX() const;
     virtual float GetY() const;
 
-    virtual void TakeDamage(int damage);
+    virtual int TakeDamage(int damage);
 
     bool IsAlive() const;
     float GetRadius() const;
