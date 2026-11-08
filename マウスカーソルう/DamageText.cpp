@@ -25,14 +25,14 @@ void DamageText::Update()
     }
 }
 
-void DamageText::Draw()
+void DamageText::Draw(int colorR,int colorG,int colorB)
 {
     if (!active) return;
 
     DrawFormatString(
         (int)x,
         (int)y,
-        GetColor(255, 80, 80),
+        GetColor(colorR, colorG, colorB),
         "%d",
         damage
     );
@@ -42,12 +42,3 @@ bool DamageText::IsActive() const
 {
     return active;
 }
-
-int DamageText::GetX()const
-{
-    return X;
-}
-
-int GetY()const
-int GetStartTime()const
-int GetDamage()const

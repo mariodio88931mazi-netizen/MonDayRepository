@@ -12,10 +12,6 @@ private:
 public:
     void Initialize(int damageValue, float posX, float posY);
     void Update();
-    void Draw();
+    void Draw(int colorR, int colorG, int colorB);
     bool IsActive() const;
-    int GetX()const;
-    int GetY()const;
-    int GetStartTime()const;
-    int GetDamage()const;
 };

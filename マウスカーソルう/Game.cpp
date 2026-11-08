@@ -284,13 +284,17 @@ void GameUpdate()
                 {
                     DamageText text;
 
-                    text.damage = actualDamage;
-                    text.x = birdEnemy.GetX();
-                    text.y = birdEnemy.GetY() - 60;
-                    text.startTime = GetNowCount();
+                    text.Initialize(
+                        actualDamage,
+                        birdEnemy.GetX(),
+                        birdEnemy.GetY() - 60
+                    );
 
                     damageTexts.push_back(text);
                 }
+                // アニメーション位置
+                effectX = birdEnemy.GetX();
+                effectY = birdEnemy.GetY();
 
                 // アニメーションを最初から再生
                 effectFrame = 0;
@@ -419,7 +423,7 @@ void GameDraw()
     // ダメージ表記
     for (auto& text : damageTexts)
     {
-        text.Draw();
+        text.Draw(60,60,255);
     }
 }
 
