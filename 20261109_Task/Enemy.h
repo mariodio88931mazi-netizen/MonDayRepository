@@ -2,6 +2,7 @@
 #pragma once
 class Enemy
 {
+private:
 	Enemy();
 
 	~Enemy();

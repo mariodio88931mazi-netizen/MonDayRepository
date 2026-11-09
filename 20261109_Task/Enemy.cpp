@@ -19,5 +19,5 @@ void Enemy::Update()
 
 void Enemy::Draw()
 {
-	cout << "Enemy‚ð•`‰æ‚µ‚Ü‚µ‚½B" <<
+	cout << "Enemy‚ð•`‰æ‚µ‚Ü‚µ‚½B" << endl;
 }
