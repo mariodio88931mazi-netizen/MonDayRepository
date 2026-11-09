@@ -14,6 +14,7 @@ private:
     float scale;        // Œ•‚Ì‘å‚«‚³
     float easing;       // ˆÚ“®‚Ì‚È‚ß‚ç‚©‚³
 	bool attack;        // UŒ‚’†‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
+	float angleDifference; // Šp“x‚Ì·
 
     float oldX;
     float oldY;

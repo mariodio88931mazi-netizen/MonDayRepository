@@ -65,6 +65,8 @@ void GameUpdate();
 
 void GameDraw();
 
+void SpawnBird();
+
 void GameFinalize();
 
 bool IsGameOver();

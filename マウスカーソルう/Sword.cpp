@@ -1,5 +1,6 @@
 #include "Sword.h"
 #include "DxLib.h"
+#include <string>
 #include<math.h>
 
 // 円周率
@@ -55,7 +56,7 @@ void Sword::Update()
 	targetAngle = atan2f(dy, dx);
 
 	// 剣を向ける
-	float angleDifference = targetAngle - angle;
+	angleDifference = targetAngle - angle;
 
 	// -PIからPIにする
 	while (angleDifference > DX_PI_F)
@@ -82,7 +83,7 @@ void Sword::Update()
 	if (!isMousePressed)
 	{
 		angle += angleDifference * rotationSpeed;
-		if (angleDifference > 1.5f)
+		if (angleDifference > 1.0f || angleDifference < -1.0f)
 		{
 			attack = true;
 		}
@@ -119,10 +120,7 @@ void Sword::Update()
 		
 	}
 
-}
-float Sword::GetAttack() const
-{
-	return attack;
+
 }
 float Sword::GetX() const
 {
@@ -147,6 +145,11 @@ void Sword::Draw()
 		graph,
 		TRUE
 	);
+
+	// デバッグ
+	DrawFormatString(10, 560, GetColor(255, 255, 255), "Sword Angle: %f", angle);
+	DrawFormatString(10, 580, GetColor(255, 255, 255), "angleDifference: %f", angleDifference);
+	DrawFormatString(10, 600, GetColor(255, 255, 255), "tragetangle: %f", targetAngle);
 }
 
 
@@ -172,4 +175,9 @@ void Sword::GetSwordSegment(float& startx, float& starty, float& endx, float& en
 	// 剣の先端の座標を計算
 	endx = x + swordLength * cos(angle);
 	endy = y + swordLength * sin(angle);
+}
+
+float Sword::GetAttack() const
+{
+	return attack;
 }

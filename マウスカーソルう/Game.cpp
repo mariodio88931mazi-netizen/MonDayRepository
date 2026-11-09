@@ -1,6 +1,10 @@
 #include <cmath>
 #include <vector>
 #include <algorithm>
+#include <memory>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
 #include "DxLib.h"
 #include "Game.h"
 #include "Enemy.h"
@@ -26,7 +30,7 @@ int screenWidth = 1300;
 
 int mouseX, mouseY;
 
-double enemyX = 1300.0;
+double enemyX = -100.0;
 double enemyY = 300.0;
 
 double enemySpeed = 1.0;
@@ -46,7 +50,8 @@ float addTime = 0.001f;
 
 bool gameOver = false;
 
-int score = 0; 
+int score = 0;
+
 
 // エフェクトアニメーション
 const int EFFECT_SPEED = 5;
@@ -69,8 +74,13 @@ namespace
 {
     Sword sword;
     Player player;
-    Bird birdEnemy;
-    Skeleton skeletonEnemy;
+
+    std::vector<std::unique_ptr<Enemy>> enemies;
+
+    int spawnTimer = 0;
+    
+	const int SPAWN_INTERVAL = 120; // 敵の出現間隔（フレーム数）
+	const int MAX_ENEMIES = 8; // 最大敵数
 }
 
     // 2点間の線分と敵の距離
@@ -163,23 +173,6 @@ namespace
             true//生きてるか
         );
 
-        // 鳥の初期化
-        birdEnemy.Initialize(
-            ImageManager::GetBirdGraph(0),
-            3,
-            -100.0f,
-            300.0f,
-            3.0f,
-            0.2f,
-            true
-        );
-
-        // 鳥のアニメーション画像を設定
-        birdEnemy.SetAnimationGraphs(
-            ImageManager::GetBirdGraph(0),
-            ImageManager::GetBirdGraph(1)
-        );
-
         bgX = 0.0;
 
         // エフェクトの初期状態
@@ -191,12 +184,43 @@ namespace
         // ダメージ表記の初期化
         damageTexts.clear();
 
+        enemies.clear();
+
+        SpawnBird();
+
         return true;
     }
+
+    void SpawnBird()
+    {
+        auto bird = std::make_unique<Bird>();
+
+        // Y座標をランダムに決定
+        float randomY = static_cast<float>(
+            100 + rand() % 501
+            );
+
+        bird->Initialize(
+            ImageManager::GetBirdGraph(0),
+            5,
+            1300.0f,
+            randomY,  // ランダムなY座標
+            1.5f,
+            exRate,
+            true
+        );
+
+        bird->SetAnimationGraphs(
+            ImageManager::GetBirdGraph(0),
+            ImageManager::GetBirdGraph(1)
+        );
+
+        enemies.push_back(std::move(bird));
+    }
+
 // ---------------------------------
 // ゲーム更新
 // ---------------------------------
-
 void GameUpdate()
 {
     if (gameOver) return;
@@ -216,9 +240,24 @@ void GameUpdate()
     // オブジェクト更新
     // ---------------------------------
 
-    birdEnemy.Update();
+	for (auto& enemy : enemies)
+	{
+		enemy->Update();
+	}
     sword.Update();
     player.Update();
+
+    spawnTimer++;
+
+    if (spawnTimer >= SPAWN_INTERVAL)
+    {
+        if (enemies.size() < MAX_ENEMIES)
+        {
+            SpawnBird();
+        }
+
+        spawnTimer = 0;
+    }
 
     // ---------------------------------
     // エフェクトアニメーション更新
@@ -242,11 +281,10 @@ void GameUpdate()
         }
     }
 
-    // ---------------------------------
-    // 剣の攻撃判定
-    // ---------------------------------
+ // ---------------------------------
+ // 剣の攻撃判定
+ // ---------------------------------
 
-    // 攻撃が終わったら次の攻撃を許可
     if (!sword.GetAttack())
     {
         effectHitThisAttack = false;
@@ -254,121 +292,138 @@ void GameUpdate()
 
     if (sword.GetAttack() && !effectHitThisAttack)
     {
-        if (birdEnemy.IsAlive())
-        {
-            float startX, startY;
-            float endX, endY;
+        float startX, startY;
+        float endX, endY;
 
-            sword.GetSwordSegment(
-                startX, startY,
-                endX, endY
-            );
+        sword.GetSwordSegment(
+            startX, startY,
+            endX, endY
+        );
+
+        for (auto& enemy : enemies)
+        {
+            if (!enemy->IsAlive()) continue;
 
             float distance = PointToSegmentDistance(
-                birdEnemy.GetX(),
-                birdEnemy.GetY(),
+                enemy->GetX(),
+                enemy->GetY(),
                 startX, startY,
                 endX, endY
             );
 
-            const float enemyRadius = 50.0f;
+            const float enemyRadius = enemy->GetRadius();
             const float swordRadius = 12.0f;
 
             if (distance <= enemyRadius + swordRadius)
             {
-                // 敵にダメージを与える
-                int actualDamage = birdEnemy.TakeDamage(player.GetAttackPower());
+                int actualDamage =
+                    enemy->TakeDamage(player.GetAttackPower());
 
-                // ダメージ表示を登録
                 if (actualDamage > 0)
                 {
                     DamageText text;
 
                     text.Initialize(
                         actualDamage,
-                        birdEnemy.GetX(),
-                        birdEnemy.GetY() - 60
+                        enemy->GetX(),
+                        enemy->GetY() - 60
                     );
 
                     damageTexts.push_back(text);
                 }
-                // アニメーション位置
-                effectX = birdEnemy.GetX();
-                effectY = birdEnemy.GetY();
 
-                // アニメーションを最初から再生
+                effectX = enemy->GetX();
+                effectY = enemy->GetY();
+
                 effectFrame = 0;
                 effectCount = 0;
                 GraphActive = true;
 
-                // この攻撃では再発生させない
                 effectHitThisAttack = true;
+
+                break;
             }
         }
     }
 
-    // ---------------------------------
-    // プレイヤーと敵の接触判定
-    // ---------------------------------
-
-    float dx = player.GetX() - birdEnemy.GetX();
-    float dy = player.GetY() - birdEnemy.GetY();
-
-    float distance = sqrtf(dx * dx + dy * dy);
-
-    const float playerRadius = 10.0f;
-    const float enemyRadius = birdEnemy.GetRadius();
-
-    if (player.IsAlive() && birdEnemy.IsAlive())
-    {
-        if (!player.IsInvincible())
+        // ---------------------------------
+        // プレイヤーと敵の接触判定
+        // ---------------------------------
+        for (auto& enemy : enemies)
         {
-            if (distance < playerRadius + enemyRadius)
+            if (!player.IsAlive()) break;
+            if (!enemy->IsAlive()) continue;
+
+            float dx = player.GetX() - enemy->GetX();
+            float dy = player.GetY() - enemy->GetY();
+
+            float distance = sqrtf(dx * dx + dy * dy);
+
+            const float playerRadius = 10.0f;
+
+            if (!player.IsInvincible())
             {
-                int actualDamage = player.TakeDamage(2);
-
-                // 実際にダメージを受けた場合だけ表示
-                if (actualDamage > 0)
+                if (distance < playerRadius + enemy->GetRadius())
                 {
-                    DamageText text;
-
-                    text.Initialize(
-                        actualDamage,
-                        player.GetX(),
-                        player.GetY() - 40
-                    );
-
-                    damageTexts.push_back(text);
+                    int actualDamage = player.TakeDamage(2);
+                    // 実際にダメージを受けた場合だけ表示
+                    if (actualDamage > 0)
+                    {
+                        DamageText text;
+                        text.Initialize(
+                            actualDamage,
+                            player.GetX(),
+                            player.GetY() - 40
+                        );
+                        damageTexts.push_back(text);
+                    }
                 }
             }
         }
-    }
 
-    if (!player.IsAlive())
-    {
-        gameOver = true;
-    }
+        // ---------------------------------
+        // 倒された敵を削除
+        // ---------------------------------
 
-    // ダメージ表示の更新
-    for (auto& text : damageTexts)
-    {
-        text.Update();
-    }
+        enemies.erase(
+            std::remove_if(
+                enemies.begin(),
+                enemies.end(),
+                [](const std::unique_ptr<Enemy>& enemy)
+                {
+                    return !enemy->IsAlive();
+                }
+            ),
+            enemies.end()
+        );
 
-    // 表示時間が終わったものを削除
-    damageTexts.erase(
-        std::remove_if(
-            damageTexts.begin(),
-            damageTexts.end(),
-            [](DamageText& text)
-            {
-                return !text.IsActive();
-            }
-        ),
-        damageTexts.end()
-    );
-}
+        if (!player.IsAlive())
+        {
+            gameOver = true;
+        }
 
+        // ダメージ表示の更新
+        for (auto& text : damageTexts)
+        {
+            text.Update();
+        }
+
+        // 表示時間が終わったものを削除
+        damageTexts.erase
+        (
+            std::remove_if
+            (
+                damageTexts.begin(),
+                damageTexts.end(),
+                [](DamageText& text)
+                {
+                    return !text.IsActive();
+                }
+            ),
+            damageTexts.end()
+        );
+} 
+   
 // ---------------------------------
 // ゲーム描画
 // ---------------------------------
@@ -377,7 +432,8 @@ void GameDraw()
 {
 
     // 背景1枚目
-    DrawExtendGraph(
+    DrawExtendGraph
+    (
         static_cast<int>(bgX),
         0,
         static_cast<int>(bgX + screenWidth),
@@ -387,7 +443,8 @@ void GameDraw()
     );
 
     // 背景2枚目
-    DrawExtendGraph(
+    DrawExtendGraph
+    (
         static_cast<int>(bgX - screenWidth),
         0,
         static_cast<int>(bgX),
@@ -397,14 +454,18 @@ void GameDraw()
     );
 
     // キャラクター描画
-    birdEnemy.Draw();
+    for (auto& enemy : enemies)
+    {
+        enemy->Draw();
+    }
     sword.Draw();
     player.Draw();
 
     // エフェクトを表示
     if (GraphActive)
     {
-        DrawRotaGraph(
+        DrawRotaGraph
+        (
             (int)effectX,
             (int)effectY,
             1.0,
@@ -413,10 +474,11 @@ void GameDraw()
             TRUE
         ); 
         // HIT表示
-    DrawFormatString(
-        600, 600,
-        GetColor(255, 0, 0),
-        "HIT!"
+        DrawFormatString
+        (
+            600, 600,
+            GetColor(255, 0, 0),
+            "HIT!"
         );
     }
 
