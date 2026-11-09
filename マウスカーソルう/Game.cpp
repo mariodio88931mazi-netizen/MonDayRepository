@@ -423,7 +423,7 @@ void GameDraw()
     // ダメージ表記
     for (auto& text : damageTexts)
     {
-        text.Draw(60,60,255);
+        text.Draw(50*player.GetAttackPower(), 95, 236 / player.GetAttackPower());
     }
 }
 

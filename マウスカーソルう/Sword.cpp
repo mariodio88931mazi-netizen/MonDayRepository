@@ -25,11 +25,11 @@ void Sword::Initialize(
 
 	angle = startAngle;
 	targetAngle = startAngle;
-	rotationSpeed = 0.08f;
+	rotationSpeed = 0.1f;
 	scale = exRate;
 
 	velocity = 0.0f;
-	attackSpeed = 10.0f;
+	attackSpeed = 8.0f;
 
 	easing = moveEasing;
 	attack = isAttacking;
