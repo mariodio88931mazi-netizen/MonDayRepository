@@ -1,4 +1,4 @@
-#include <cmath>
+ï»¿#include <cmath>
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -17,9 +17,9 @@
 #include "DamageText.h"
 
 // ---------------------------------
-// ƒOƒ[ƒoƒ‹•Ï”‚ÌÀ‘Ì
+// ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã®å®Ÿä½“
 // ---------------------------------
-// ƒ_ƒ[ƒW•\¦
+// ãƒ€ãƒ¡ãƒ¼ã‚¸è¡¨ç¤º
 std::vector<DamageText> damageTexts;
 
 int imgW, imgH;
@@ -53,21 +53,21 @@ bool gameOver = false;
 int score = 0;
 
 
-// ƒGƒtƒFƒNƒgƒAƒjƒ[ƒVƒ‡ƒ“
+// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
 const int EFFECT_SPEED = 5;
 
-int effectFrame = 0;     // Œ»İ‚Ì‰æ‘œ”Ô†
-int effectCount = 0;     // ƒRƒ}Ø‚è‘Ö‚¦—p
+int effectFrame = 0;     // ç¾åœ¨ã®ç”»åƒç•ªå·
+int effectCount = 0;     // ã‚³ãƒåˆ‡ã‚Šæ›¿ãˆç”¨
 bool GraphActive = false;
 
 float effectX = 0.0f;
 float effectY = 0.0f;
 
-bool effectHitThisAttack = false; // 1‰ñ‚ÌUŒ‚‚ÅƒGƒtƒFƒNƒg‚ªƒqƒbƒg‚µ‚½‚©‚Ç‚¤‚©‚ğ’ÇÕ‚·‚éƒtƒ‰ƒO
+bool effectHitThisAttack = false; // 1å›ã®æ”»æ’ƒã§ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒãƒ’ãƒƒãƒˆã—ãŸã‹ã©ã†ã‹ã‚’è¿½è·¡ã™ã‚‹ãƒ•ãƒ©ã‚°
 
 
 // ---------------------------------
-// ƒQ[ƒ€“àƒIƒuƒWƒFƒNƒg
+// ã‚²ãƒ¼ãƒ å†…ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 // ---------------------------------
 
 namespace
@@ -79,11 +79,11 @@ namespace
 
     int spawnTimer = 0;
     
-	const int SPAWN_INTERVAL = 120; // “G‚ÌoŒ»ŠÔŠuiƒtƒŒ[ƒ€”j
-	const int MAX_ENEMIES = 8; // Å‘å“G”
+	const int SPAWN_INTERVAL = 120; // æ•µã®å‡ºç¾é–“éš”ï¼ˆãƒ•ãƒ¬ãƒ¼ãƒ æ•°ï¼‰
+	const int MAX_ENEMIES = 8; // æœ€å¤§æ•µæ•°
 }
 
-    // 2“_ŠÔ‚Ìü•ª‚Æ“G‚Ì‹——£
+    // 2ç‚¹é–“ã®ç·šåˆ†ã¨æ•µã®è·é›¢
     float PointToSegmentDistance(
         float px, float py,
         float ax, float ay,
@@ -110,7 +110,7 @@ namespace
             (apX * abX + apY * abY)
             / lengthSquared;
 
-        // ü•ª‚Ì”ÍˆÍ‚É§ŒÀ
+        // ç·šåˆ†ã®ç¯„å›²ã«åˆ¶é™
         if (t < 0.0f)
         {
             t = 0.0f;
@@ -130,27 +130,27 @@ namespace
     }
 
 // ---------------------------------
-// ƒQ[ƒ€‰Šú‰»
+// ã‚²ãƒ¼ãƒ åˆæœŸåŒ–
 // ---------------------------------
 
     bool GameInitialize()
     {
         gameOver = false;
 
-        // ‰æ‘œ“Ç‚İ‚İ
+        // ç”»åƒèª­ã¿è¾¼ã¿
         if (!ImageManager::Initialize())
         {
             return false;
         }
 
-        // Œ•‚Ì‰æ‘œƒTƒCƒY
+        // å‰£ã®ç”»åƒã‚µã‚¤ã‚º
         GetGraphSize(
             ImageManager::GetSwordGraph(),
             &imgW,
             &imgH
         );
 
-        // Œ•‚Ì‰Šú‰»
+        // å‰£ã®åˆæœŸåŒ–
         sword.Initialize(
             ImageManager::GetSwordGraph(),
             640.0f,
@@ -161,27 +161,27 @@ namespace
             false
         );
 
-        // ƒvƒŒƒCƒ„[‚Ì‰Šú‰»
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸåŒ–
         player.Initialize(
             10,//hp
-            640.0f,//‚˜
-            360.0f,//‚™
+            640.0f,//ï½˜
+            360.0f,//ï½™
             0,//exp
-            1,//ƒŒƒxƒ‹
-            1,//UŒ‚—Í
-            easing,//ˆÚ“®ƒkƒ‹ƒkƒ‹“x
-            true//¶‚«‚Ä‚é‚©
+            1,//ãƒ¬ãƒ™ãƒ«
+            1,//æ”»æ’ƒåŠ›
+            easing,//ç§»å‹•ãƒŒãƒ«ãƒŒãƒ«åº¦
+            true//ç”Ÿãã¦ã‚‹ã‹
         );
 
         bgX = 0.0;
 
-        // ƒGƒtƒFƒNƒg‚Ì‰Šúó‘Ô
+        // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®åˆæœŸçŠ¶æ…‹
         effectFrame = 0;
         effectCount = 0;
         GraphActive = false;
         effectHitThisAttack = false;
 
-        // ƒ_ƒ[ƒW•\‹L‚Ì‰Šú‰»
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸è¡¨è¨˜ã®åˆæœŸåŒ–
         damageTexts.clear();
 
         enemies.clear();
@@ -195,7 +195,7 @@ namespace
     {
         auto bird = std::make_unique<Bird>();
 
-        // YÀ•W‚ğƒ‰ƒ“ƒ_ƒ€‚ÉŒˆ’è
+        // Yåº§æ¨™ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«æ±ºå®š
         float randomY = static_cast<float>(
             100 + rand() % 501
             );
@@ -203,8 +203,8 @@ namespace
         bird->Initialize(
             ImageManager::GetBirdGraph(0),
             5,
-            1300.0f,
-            randomY,  // ƒ‰ƒ“ƒ_ƒ€‚ÈYÀ•W
+            -100.0f,
+            randomY,  // ãƒ©ãƒ³ãƒ€ãƒ ãªYåº§æ¨™
             1.5f,
             exRate,
             true
@@ -219,14 +219,14 @@ namespace
     }
 
 // ---------------------------------
-// ƒQ[ƒ€XV
+// ã‚²ãƒ¼ãƒ æ›´æ–°
 // ---------------------------------
 void GameUpdate()
 {
     if (gameOver) return;
 
     // ---------------------------------
-    // ”wŒiƒXƒNƒ[ƒ‹
+    // èƒŒæ™¯ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«
     // ---------------------------------
 
     bgX += scrollSpeed;
@@ -237,7 +237,7 @@ void GameUpdate()
     }
 
     // ---------------------------------
-    // ƒIƒuƒWƒFƒNƒgXV
+    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ›´æ–°
     // ---------------------------------
 
 	for (auto& enemy : enemies)
@@ -260,20 +260,20 @@ void GameUpdate()
     }
 
     // ---------------------------------
-    // ƒGƒtƒFƒNƒgƒAƒjƒ[ƒVƒ‡ƒ“XV
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³æ›´æ–°
     // ---------------------------------
 
     if (GraphActive)
     {
         effectCount++;
 
-        // 5ƒtƒŒ[ƒ€‚²‚Æ‚ÉŸ‚Ì‰æ‘œ‚Ö
+        // 5ãƒ•ãƒ¬ãƒ¼ãƒ ã”ã¨ã«æ¬¡ã®ç”»åƒã¸
         if (effectCount >= EFFECT_SPEED)
         {
             effectCount = 0;
             effectFrame++;
 
-            // ÅŒã‚Ì‰æ‘œ‚Ü‚ÅÄ¶‚µ‚½‚çI—¹
+            // æœ€å¾Œã®ç”»åƒã¾ã§å†ç”Ÿã—ãŸã‚‰çµ‚äº†
             if (effectFrame >= ImageManager::GetEffectMax())
             {
                 GraphActive = false;
@@ -282,7 +282,7 @@ void GameUpdate()
     }
 
  // ---------------------------------
- // Œ•‚ÌUŒ‚”»’è
+ // å‰£ã®æ”»æ’ƒåˆ¤å®š
  // ---------------------------------
 
     if (!sword.GetAttack())
@@ -347,7 +347,7 @@ void GameUpdate()
     }
 
         // ---------------------------------
-        // ƒvƒŒƒCƒ„[‚Æ“G‚ÌÚG”»’è
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨æ•µã®æ¥è§¦åˆ¤å®š
         // ---------------------------------
         for (auto& enemy : enemies)
         {
@@ -366,7 +366,7 @@ void GameUpdate()
                 if (distance < playerRadius + enemy->GetRadius())
                 {
                     int actualDamage = player.TakeDamage(2);
-                    // ÀÛ‚Éƒ_ƒ[ƒW‚ğó‚¯‚½ê‡‚¾‚¯•\¦
+                    // å®Ÿéš›ã«ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸå ´åˆã ã‘è¡¨ç¤º
                     if (actualDamage > 0)
                     {
                         DamageText text;
@@ -382,7 +382,7 @@ void GameUpdate()
         }
 
         // ---------------------------------
-        // “|‚³‚ê‚½“G‚ğíœ
+        // å€’ã•ã‚ŒãŸæ•µã‚’å‰Šé™¤
         // ---------------------------------
 
         enemies.erase(
@@ -402,13 +402,13 @@ void GameUpdate()
             gameOver = true;
         }
 
-        // ƒ_ƒ[ƒW•\¦‚ÌXV
+        // ãƒ€ãƒ¡ãƒ¼ã‚¸è¡¨ç¤ºã®æ›´æ–°
         for (auto& text : damageTexts)
         {
             text.Update();
         }
 
-        // •\¦ŠÔ‚ªI‚í‚Á‚½‚à‚Ì‚ğíœ
+        // è¡¨ç¤ºæ™‚é–“ãŒçµ‚ã‚ã£ãŸã‚‚ã®ã‚’å‰Šé™¤
         damageTexts.erase
         (
             std::remove_if
@@ -425,13 +425,13 @@ void GameUpdate()
 } 
    
 // ---------------------------------
-// ƒQ[ƒ€•`‰æ
+// ã‚²ãƒ¼ãƒ æç”»
 // ---------------------------------
 
 void GameDraw()
 {
 
-    // ”wŒi1–‡–Ú
+    // èƒŒæ™¯1æšç›®
     DrawExtendGraph
     (
         static_cast<int>(bgX),
@@ -442,7 +442,7 @@ void GameDraw()
         FALSE
     );
 
-    // ”wŒi2–‡–Ú
+    // èƒŒæ™¯2æšç›®
     DrawExtendGraph
     (
         static_cast<int>(bgX - screenWidth),
@@ -453,7 +453,7 @@ void GameDraw()
         FALSE
     );
 
-    // ƒLƒƒƒ‰ƒNƒ^[•`‰æ
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼æç”»
     for (auto& enemy : enemies)
     {
         enemy->Draw();
@@ -461,7 +461,7 @@ void GameDraw()
     sword.Draw();
     player.Draw();
 
-    // ƒGƒtƒFƒNƒg‚ğ•\¦
+    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚’è¡¨ç¤º
     if (GraphActive)
     {
         DrawRotaGraph
@@ -473,7 +473,7 @@ void GameDraw()
             ImageManager::GetEffectGraph(effectFrame),
             TRUE
         ); 
-        // HIT•\¦
+        // HITè¡¨ç¤º
         DrawFormatString
         (
             600, 600,
@@ -482,7 +482,7 @@ void GameDraw()
         );
     }
 
-    // ƒ_ƒ[ƒW•\‹L
+    // ãƒ€ãƒ¡ãƒ¼ã‚¸è¡¨è¨˜
     for (auto& text : damageTexts)
     {
         text.Draw(50*player.GetAttackPower(), 95, 236 / player.GetAttackPower());
@@ -490,7 +490,7 @@ void GameDraw()
 }
 
 // ---------------------------------
-// ƒQ[ƒ€I—¹ˆ—
+// ã‚²ãƒ¼ãƒ çµ‚äº†å‡¦ç†
 // ---------------------------------
 
 void GameFinalize()
@@ -498,7 +498,7 @@ void GameFinalize()
     ImageManager::Finalize();
 }
 
-// æ“¾ŠÖ”
+// å–å¾—é–¢æ•°
 bool IsGameOver()
 {
     return gameOver;

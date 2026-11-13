@@ -1,4 +1,4 @@
-#include "Enemy.h"
+ï»¿#include "Enemy.h"
 #include "DxLib.h"
 #include <iostream>
 #include "DamageText.h"
@@ -18,17 +18,17 @@ void Enemy::Update()
 {
 	if (!alive) return;
 
-	//‰E•ûŒü‚ÉˆÚ“®
+	//å³æ–¹å‘ã«ç§»å‹•
 	x += speed;
 
-	//‰æ–Ê‚Ì‰E‘¤‚ÉÁ‚¦‚½‚ç¶‘¤‚É–ß‚·
+	//ç”»é¢ã®å³å´ã«æ¶ˆãˆãŸã‚‰å·¦å´ã«æˆ»ã™
 	if (x > 1400.0f)
 	{
 		x = -1300.0f;
 	}
 }
 
-//	“G‚Ì•`‰æˆ—
+//	æ•µã®æç”»å‡¦ç†
 void Enemy::Draw()
 {
 	if (!alive)
@@ -52,12 +52,6 @@ int Enemy::TakeDamage(int damage)
 	}
 
 	int actualDamage = damage;
-
-	// Žc‚èHPˆÈã‚Í•\‹L‚µ‚È‚¢
-	if (actualDamage > hp)
-	{
-		actualDamage = hp;
-	}
 
 	hp -= actualDamage;
 

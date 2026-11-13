@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include "DxLib.h"
 #include "Game.h"
 
@@ -27,7 +27,7 @@ void Player::Initialize(
     move = moveEasing;
     alive = alivecheck;
 
-    // –³“GŠÔ‚Ì‰Šú‰»
+    // ç„¡æ•µæ™‚é–“ã®åˆæœŸåŒ–
     invincibleTimer = 0;
     invincibleDuration = 60;
 }
@@ -43,7 +43,7 @@ void Player::Update()
     X += (mouseX - X) * move;
     Y += (mouseY - Y) * move;
 
-    // –³“GŠÔ‚ğŒ¸‚ç‚·
+    // ç„¡æ•µæ™‚é–“ã‚’æ¸›ã‚‰ã™
     if (invincibleTimer > 0)
     {
         invincibleTimer--;
@@ -54,7 +54,7 @@ void Player::Draw()
 {
     if (!alive) return;
 
-    // –³“G’†‚Í“_–Å‚³‚¹‚é
+    // ç„¡æ•µä¸­ã¯ç‚¹æ»…ã•ã›ã‚‹
     if (invincibleTimer == 0 || invincibleTimer % 10 < 5)
     {
         int Color = GetColor(255, 0, 0);
@@ -77,7 +77,7 @@ void Player::Draw()
 
 int Player::TakeDamage(int damage)
 {
-    // €–S’†E–³“G’†Eƒ_ƒ[ƒW0ˆÈ‰º‚È‚ç‰½‚à‚µ‚È‚¢
+    // æ­»äº¡ä¸­ãƒ»ç„¡æ•µä¸­ãƒ»ãƒ€ãƒ¡ãƒ¼ã‚¸0ä»¥ä¸‹ãªã‚‰ä½•ã‚‚ã—ãªã„
     if (!alive || invincibleTimer > 0 || damage <= 0)
     {
         return 0;
@@ -85,7 +85,7 @@ int Player::TakeDamage(int damage)
 
     int actualDamage = damage;
 
-    // HPˆÈã‚Ìƒ_ƒ[ƒW‚ğó‚¯‚½ê‡
+    // HPä»¥ä¸Šã®ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸå ´åˆ
     if (actualDamage > HP)
     {
         actualDamage = HP;
@@ -99,10 +99,15 @@ int Player::TakeDamage(int damage)
         alive = false;
     }
 
-    // –ñ1•bŠÔ–³“G
+    // ç´„1ç§’é–“ç„¡æ•µ
     invincibleTimer = invincibleDuration;
 
     return actualDamage;
+}
+
+void Player::LevelUp()
+{
+
 }
 
 float Player::GetX() const
@@ -137,5 +142,5 @@ bool Player::IsInvincible() const
 
 void Player::HitCheck()
 {
-    // ¡‰ñ‚ÍGame.cpp‘¤‚Å“G‚Æ‚ÌÚG”»’è‚ğs‚¤
+    // ä»Šå›ã¯Game.cppå´ã§æ•µã¨ã®æ¥è§¦åˆ¤å®šã‚’è¡Œã†
 }

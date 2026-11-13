@@ -1,21 +1,21 @@
-#pragma once
+ï»¿#pragma once
 
 class Player
 {
 private:
-    int HP;                 // ‘Ì—Í
-    int EXP;                // ŒoŒ±’l
-    int Level;              // ƒŒƒxƒ‹
-    int Powor;              // UŒ‚—Í
+    int HP;                 // ä½“åŠ›
+    int EXP;                // çµŒé¨“å€¤
+    int Level;              // ãƒ¬ãƒ™ãƒ«
+    int Powor;              // æ”»æ’ƒåŠ›
 
-    float X, Y;             // Œ»İ‚ÌÀ•W
-    float targetX, targetY; // –Ú•WÀ•W
-    float move;              // ˆÚ“®‚Ì‚È‚ß‚ç‚©‚³
+    float X, Y;             // ç¾åœ¨ã®åº§æ¨™
+    float targetX, targetY; // ç›®æ¨™åº§æ¨™
+    float move;              // ç§»å‹•ã®ãªã‚ã‚‰ã‹ã•
 
-    bool alive;              // ¶‘¶ó‘Ô
+    bool alive;              // ç”Ÿå­˜çŠ¶æ…‹
 
-    int invincibleTimer;     // –³“GŠÔ
-    int invincibleDuration;  // –³“GŠÔ‚Ì’·‚³
+    int invincibleTimer;     // ç„¡æ•µæ™‚é–“
+    int invincibleDuration;  // ç„¡æ•µæ™‚é–“ã®é•·ã•
 
 public:
     void Initialize(
@@ -31,11 +31,12 @@ public:
 
     void Draw();
     void Update();
+    void LevelUp();
 
     void HitCheck();
     int TakeDamage(int damage);
 
-    // ’Ç‰Á‚·‚éŠÖ”
+    // è¿½åŠ ã™ã‚‹é–¢æ•°
     float GetX() const;
     float GetY() const;
     int GetHP() const;
