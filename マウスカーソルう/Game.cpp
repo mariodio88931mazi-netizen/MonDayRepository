@@ -199,13 +199,16 @@ namespace
         float randomY = static_cast<float>(
             100 + rand() % 501
             );
+        float random = static_cast<float>(
+            1 + rand() % 2
+            );
 
         bird->Initialize(
             ImageManager::GetBirdGraph(0),
             5,
             -100.0f,
             randomY,  // ランダムなY座標
-            1.5f,
+            random,
             exRate,
             true
         );
@@ -316,8 +319,17 @@ void GameUpdate()
 
             if (distance <= enemyRadius + swordRadius)
             {
-                int actualDamage =
-                    enemy->TakeDamage(player.GetAttackPower());
+                int actualDamage = enemy->TakeDamage(player.GetAttackPower());
+
+                // 実際にダメージを与えた場合
+                if (actualDamage > 0)
+                {
+                    // 敵を倒した瞬間だけ100点加算
+                    if (!enemy->IsAlive())
+                    {
+                        score += 100;
+                    }
+                }
 
                 if (actualDamage > 0)
                 {
@@ -430,7 +442,6 @@ void GameUpdate()
 
 void GameDraw()
 {
-
     // 背景1枚目
     DrawExtendGraph
     (
@@ -487,6 +498,16 @@ void GameDraw()
     {
         text.Draw(50*player.GetAttackPower(), 95, 236 / player.GetAttackPower());
     }
+
+    SetFontSize(25);
+
+    // スコア表示
+    DrawFormatString
+    (
+        1000, 50,
+        GetColor(255, 0, 0),
+        "score : %d", score
+    );
 }
 
 // ---------------------------------
