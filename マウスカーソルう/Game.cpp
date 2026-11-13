@@ -80,7 +80,7 @@ namespace
     int spawnTimer = 0;
     
 	const int SPAWN_INTERVAL = 120; // 敵の出現間隔（フレーム数）
-	const int MAX_ENEMIES = 8; // 最大敵数
+	int MAX_ENEMIES = 3 + addMAXENEMY; // 最大敵数
 }
 
     // 2点間の線分と敵の距離
@@ -434,6 +434,8 @@ void GameUpdate()
             ),
             damageTexts.end()
         );
+
+        
 } 
    
 // ---------------------------------

@@ -25,6 +25,7 @@ extern double enemyY;
 
 // “G‚ÌˆÚ“®‘¬“x
 extern double enemySpeed;
+extern int addMAXENEMY;
 
 // ‰æ‘œ‚ÌŒ»İˆÊ’u
 extern double currentX;
