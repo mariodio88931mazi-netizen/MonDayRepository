@@ -21,6 +21,10 @@ private:
 
     float velocity;       // 剣の移動速度
     float attackSpeed;    // 攻撃判定が出る速
+
+    // スイープ判定
+    float oldStartX, oldStartY;
+    float oldEndX, oldEndY;
 public:
     // 初期化
     void Initialize(

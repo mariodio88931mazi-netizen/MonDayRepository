@@ -1,11 +1,11 @@
-ï»¿#include "Sword.h"
+#include "Sword.h"
 #include "DxLib.h"
 #include <string>
 #include<math.h>
 
-// å††å‘¨ç‡
+// ‰~ü—¦
 #define DX_PI_F 3.14159265358979323846f
-// å‰£ã®åˆæœŸåŒ–
+// Œ•‚Ì‰Šú‰»
 void Sword::Initialize(
 	int graphHandle,
 	float startX,
@@ -16,6 +16,7 @@ void Sword::Initialize(
 	bool isAttacking
 )
 {
+    // Œ•ŠÖŒW
 	graph = graphHandle;
 
 	x = startX;
@@ -34,94 +35,115 @@ void Sword::Initialize(
 
 	easing = moveEasing;
 	attack = isAttacking;
+
+    // Œ•‚Ì“–‚½‚è”»’èŠÖŒW
+    float swordLength = -540.0f * scale;
+
+    oldStartX = x;
+    oldStartY = y;
+
+    oldEndX = x + swordLength * cosf(angle);
+    oldEndY = y + swordLength * sinf(angle);
 }
 
-// å‰£ã®ç§»å‹•ãƒ»è§’åº¦
+// Œ•‚ÌˆÚ“®EŠp“x
+
 void Sword::Update()
 {
-	int mouseX;
-	int mouseY;
+    int mouseX;
+    int mouseY;
 
-	// ãƒã‚¦ã‚¹ã®ç¾åœ¨ä½ç½®ã‚’å–å¾—
-	GetMousePoint(&mouseX, &mouseY);
+    // ƒ}ƒEƒX‚ÌŒ»İˆÊ’u‚ğæ“¾
+    GetMousePoint(&mouseX, &mouseY);
 
-	// å‰£ã®ä½ç½®
-	x += (mouseX - x) * easing;
-	y += (mouseY - y) * easing;
+    // Œ•‚ÌˆÊ’u‚ğXV
+    x += (mouseX - x) * easing;
+    y += (mouseY - y) * easing;
 
+    // ƒ}ƒEƒX‚Ì•ûŒü‚ğŒvZ
+    float dx = mouseX - x;
+    float dy = mouseY - y;
+    targetAngle = atan2f(dy, dx);
 
-	// ãƒã‚¦ã‚¹ã®æ–¹å‘ã‚’è¨ˆç®—
-	float dx = mouseX - x;
-	float dy = mouseY - y;
-	targetAngle = atan2f(dy, dx);
+    // Œ•‚ÌŠp“x·‚ğŒvZ
+    angleDifference = targetAngle - angle;
 
-	// å‰£ã‚’å‘ã‘ã‚‹
-	angleDifference = targetAngle - angle;
+    while (angleDifference > DX_PI_F)
+    {
+        angleDifference -= 2.0f * DX_PI_F;
+    }
+    while (angleDifference < -DX_PI_F)
+    {
+        angleDifference += 2.0f * DX_PI_F;
+    }
 
-	// -PIã‹ã‚‰PIã«ã™ã‚‹
-	while (angleDifference > DX_PI_F)
-	{
-		angleDifference -= 2.0f * DX_PI_F;
-	}
-	while (angleDifference < -DX_PI_F)
-	{
-		angleDifference += 2.0f * DX_PI_F;
-	}
+    // Šp“x‚ğ’²®
+    while (angle > 2.0f * DX_PI_F)
+    {
+        angle -= 2.0f * DX_PI_F;
+    }
+    while (angle < -2.0f * DX_PI_F)
+    {
+        angle += 2.0f * DX_PI_F;
+    }
 
-	//360åº¦ä»¥ä¸Šã®å›è»¢ã‚’ã—ãŸã‚‰ãƒªã‚»ãƒƒãƒˆ
-	while (angle > 2.0f * DX_PI_F)
-	{
-		angle -= 2.0f * DX_PI_F;
-	}
-	while (angle < -2.0f * DX_PI_F)
-	{
-		angle += 2.0f * DX_PI_F;
-	}
+    // ‘O‚ÌƒtƒŒ[ƒ€‚©‚ç‚ÌˆÚ“®‹——£‚ğŒvZ
+    float moveX = x - oldX;
+    float moveY = y - oldY;
 
-	bool isMousePressed = (GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
-	// å‰£ã®è§’åº¦ã‚’æ»‘ã‚‰ã‹ã«å¤‰åŒ–
-	if (!isMousePressed)
-	{
-		angle += angleDifference * rotationSpeed;
-		if (angleDifference > 0.8f || angleDifference < -0.8f)
-		{
-			attack = true;
-		}
-		else
-		{
-			attack = false;
-		}
-	}
-	else
-	{
-		if (true)
-		{
-			// å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®ç§»å‹•è·é›¢ã‚’è¨ˆç®—
-			float dx = x - oldX;
-			float dy = y - oldY;
+    velocity = sqrtf(moveX * moveX + moveY * moveY);
 
-			// ç§»å‹•é€Ÿåº¦ã‚’è¨ˆç®—
-			velocity = sqrtf(dx * dx + dy * dy);
+    bool isMousePressed =
+        (GetMouseInput() & MOUSE_INPUT_LEFT) != 0;
 
-			// æ”»æ’ƒåˆ¤å®š
-			if (velocity >= attackSpeed)
-			{
-				attack = true;
-			}
-			else
-			{
-				attack = false;
-			}
+    if (!isMousePressed)
+    {
+        // Œ•‚ÌŠp“x‚ğŠŠ‚ç‚©‚É•Ï‰»
+        angle += angleDifference * rotationSpeed;
 
-			// ç¾åœ¨ä½ç½®ã‚’ä¿å­˜
-			oldX = x;
-			oldY = y;
-		}
-		
-	}
+        // Šp“x·‚É‚æ‚éUŒ‚
+        if (angleDifference > 0.8f || angleDifference < -0.8f)
+        {
+            attack = true;
+        }
+        else
+        {
+            attack = false;
+        }
+    }
+    else
+    {
+        // ˆÚ“®‘¬“x‚É‚æ‚éUŒ‚
+        if (velocity >= attackSpeed)
+        {
+            attack = true;
+        }
+        else
+        {
+            attack = false;
+        }
+    }
 
+    // Œ»İ‚ÌŒ•‚Ìü•ª‚ğæ“¾
+    float startX, startY, endX, endY;
 
+    GetSwordSegment(
+        startX, startY,
+        endX, endY
+    );
+
+    // Œ»İ‚ÌŒ•‚ÌˆÊ’u‚ğ•Û‘¶
+    oldStartX = startX;
+    oldStartY = startY;
+
+    oldEndX = endX;
+    oldEndY = endY;
+
+    // Ÿ‚ÌƒtƒŒ[ƒ€—p‚ÉƒvƒŒƒCƒ„[ˆÊ’u‚à•Û‘¶
+    oldX = x;
+    oldY = y;
 }
+
 float Sword::GetX() const
 {
 	return x;
@@ -131,7 +153,7 @@ float Sword::GetY() const
 	return y;
 }
 
-// å‰£ã®æç”»
+// Œ•‚Ì•`‰æ
 void Sword::Draw()
 {
 	DrawRotaGraph2
@@ -146,7 +168,7 @@ void Sword::Draw()
 		TRUE
 	);
 
-	// ãƒ‡ãƒãƒƒã‚°
+	// ƒfƒoƒbƒO
 	DrawFormatString(10, 560, GetColor(255, 255, 255), "Sword Angle: %f", angle);
 	DrawFormatString(10, 580, GetColor(255, 255, 255), "angleDifference: %f", angleDifference);
 	DrawFormatString(10, 600, GetColor(255, 255, 255), "tragetangle: %f", targetAngle);
@@ -166,13 +188,13 @@ void Sword::DrawEffect(float x, float y, float scale, float graph)
 
 void Sword::GetSwordSegment(float& startx, float& starty, float& endx, float& endy) const
 {
-	// æŸ„ã®é•·ã•ã‚’å§‹ç‚¹ã«ã™ã‚‹
+	// •¿‚Ì’·‚³‚ğn“_‚É‚·‚é
 	startx = x;
 	starty = y;
 
-	// ç”»åƒã®ä¸­å¿ƒã‹ã‚‰å‰£å…ˆã¾ã§ã®è·é›¢
+	// ‰æ‘œ‚Ì’†S‚©‚çŒ•æ‚Ü‚Å‚Ì‹——£
 	float swordLength = -540.0f * scale;
-	// å‰£ã®å…ˆç«¯ã®åº§æ¨™ã‚’è¨ˆç®—
+	// Œ•‚Ìæ’[‚ÌÀ•W‚ğŒvZ
 	endx = x + swordLength * cos(angle);
 	endy = y + swordLength * sin(angle);
 }
