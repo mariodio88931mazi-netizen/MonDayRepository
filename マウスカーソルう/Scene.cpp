@@ -11,24 +11,26 @@ int stageSelect = 0;
 
 void StartScene()
 {        
+
     // ƒ^ƒCƒgƒ‹‰æ–Ê
     DrawExtendGraph(
         static_cast<int>(0.0),
         0,
-        static_cast<int>(1300),
-        720,
+        static_cast<int>(1920),
+        1080,
         BackGround,
         FALSE);
 
-    DrawFormatString(
-        525, 250,
-        GetColor(255, 0, 0),
-        "FrySord!"
+    DrawGraph(
+        600,
+        250,
+        TitleGraph,
+        TRUE
     );
 
     DrawFormatString(
-        490, 350,
-        GetColor(255, 255, 0),
+        600, 520,
+        GetColor(255,0, 0),
         "Press ENTER to Start"
     );
 }
@@ -40,7 +42,7 @@ void GameOver()
         static_cast<int>(0.0),
         0,
         static_cast<int>(1300),
-        720,
+        1080,
         BackGround,
         FALSE);
 

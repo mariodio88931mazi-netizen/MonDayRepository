@@ -13,5 +13,6 @@ public:
 	static int GetBirdGraph(int index);
 	static int GetEffectGraph(int index);
 	static int GetEffectMax();
+	static int GetTitleGraph();
 };
 

@@ -16,6 +16,9 @@ private:
 	bool attack;        // UŒ‚’†‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
 	float angleDifference; // Šp“x‚Ì·
 
+    bool SpcialAtk;  // •KE‚ª‘Å‚Ä‚é‚©
+    int SpcialGaeg;  // •KEƒQ[ƒW
+
     float oldX;
     float oldY;
 
@@ -55,4 +58,6 @@ public:
 	void DrawEffect(float x, float y, float scale, float angle);
 
 	float GetAttack() const;
+
+    void SpcialAttack() const;
 };

@@ -221,3 +221,8 @@ float Sword::GetAttack() const
 {
 	return attack;
 }
+
+void Sword::SpcialAttack() const
+{
+    //DrawCircle()
+}

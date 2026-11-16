@@ -15,6 +15,7 @@
 #include "Scene.h"
 #include "ImageManager.h"
 #include "DamageText.h"
+#include "StageManager.h"
 
 // ---------------------------------
 // グローバル変数の実体
@@ -26,7 +27,7 @@ int imgW, imgH;
 
 double bgX = 0.0;
 double scrollSpeed = 2.0;
-int screenWidth = 1280;
+int screenWidth = 1920;
 
 int mouseX, mouseY;
 
@@ -78,10 +79,7 @@ namespace
 
     std::vector<std::unique_ptr<Enemy>> enemies;
 
-    int spawnTimer = 0;
-    
-	const int SPAWN_INTERVAL = 120; // 敵の出現間隔（フレーム数）
-	int MAX_ENEMIES = 3 + addMAXENEMY; // 最大敵数
+    StageManager stageManager;
 }
 
     // 2点間の線分と敵の距離
@@ -243,39 +241,48 @@ namespace
 
         enemies.clear();
 
-        SpawnBird();
+        // ステージ初期化
+        stageManager.Initialize();
 
         return true;
     }
 
-    void SpawnBird()
+    void SpawnEnemy(const StageSpawnData& data)
     {
-        auto bird = std::make_unique<Bird>();
+        switch (data.type)
+        {
+        case StageEnemyType::Bird:
+        {
+            auto bird = std::make_unique<Bird>();
 
-        // Y座標をランダムに決定
-        float randomY = static_cast<float>(
-            100 + rand() % 501
+            bird->Initialize(
+                ImageManager::GetBirdGraph(0),
+                5,
+                data.x,
+                data.y,
+                data.speed,
+                exRate,
+                true
             );
-        float random = static_cast<float>(
-            1 + rand() % 2
+
+            bird->SetAnimationGraphs(
+                ImageManager::GetBirdGraph(0),
+                ImageManager::GetBirdGraph(1)
             );
 
-        bird->Initialize(
-            ImageManager::GetBirdGraph(0),
-            5,
-            -100.0f,
-            randomY,  // ランダムなY座標
-            random,
-            exRate,
-            true
-        );
+            enemies.push_back(std::move(bird));
+            break;
+        }
 
-        bird->SetAnimationGraphs(
-            ImageManager::GetBirdGraph(0),
-            ImageManager::GetBirdGraph(1)
-        );
+        case StageEnemyType::Skeleton:
+        {
+            auto skeleton = std::make_unique<Skeleton>();
 
-        enemies.push_back(std::move(bird));
+            // ここは現在のSkeleton::Initializeの引数に合わせる
+            // まだ実際のコードを確認してから実装する
+            break;
+        }
+        }
     }
 
 // ---------------------------------
@@ -307,16 +314,13 @@ void GameUpdate()
     sword.Update();
     player.Update();
 
-    spawnTimer++;
+    // ステージ更新
+    stageManager.Update();
 
-    if (spawnTimer >= SPAWN_INTERVAL)
+    // 通常敵の出現要求を取得
+    for (const auto& data : stageManager.GetSpawnRequests())
     {
-        if (enemies.size() < MAX_ENEMIES)
-        {
-            SpawnBird();
-        }
-
-        spawnTimer = 0;
+        SpawnEnemy(data);
     }
 
     // ---------------------------------
@@ -585,7 +589,7 @@ void GameDraw()
         static_cast<int>(bgX),
         0,
         static_cast<int>(bgX + screenWidth),
-        720,
+        1080,
         BackGround,
         FALSE
     );
@@ -596,7 +600,7 @@ void GameDraw()
         static_cast<int>(bgX - screenWidth),
         0,
         static_cast<int>(bgX),
-        720,
+        1080,
         BackGround,
         FALSE
     );

@@ -2,8 +2,10 @@
 #include "DxLib.h"
 
 // ‰æ‘œƒnƒ“ƒhƒ‹
+int Titlegraph;
 int SwordGraph;
 int BackGround;
+int TitleGraph;
 
 const int BIRD_MAX = 2;
 int Enemy_BIRD[BIRD_MAX];
@@ -16,6 +18,7 @@ bool ImageManager::Initialize()
 {
     SwordGraph = LoadGraph("img/sord.png");
     BackGround = LoadGraph("img/BackGround.png");
+    TitleGraph = LoadGraph("img/Title.png");
     // ’¹‰æ‘œ
     for (int i = 0; i < BIRD_MAX; i++)
     {
@@ -106,4 +109,9 @@ int ImageManager::GetEffectGraph(int index)
 int ImageManager::GetEffectMax()
 {
 	return EFFECT_MAX;
+}
+
+int ImageManager::GetTitleGraph()
+{
+    return TitleGraph;
 }

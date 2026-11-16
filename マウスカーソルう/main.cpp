@@ -8,7 +8,7 @@ int WINAPI WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    SetGraphMode(1280, 720, 32);
+    SetGraphMode(1920, 1080, 32);
     SetWindowText("FrySord!");
     ChangeWindowMode(TRUE);
 

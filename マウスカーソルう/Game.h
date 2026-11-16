@@ -1,5 +1,7 @@
 #pragma once
 #include "DxLib.h"
+
+struct StageSpawnData;
 // ‰æ‘œŠeí
 extern int SwordGraph;
 extern int BackGround;
@@ -7,6 +9,7 @@ extern int Enemy_BIRD1;
 extern int Enemy_BIRD2;
 extern int Enemy_SKELETON1;
 extern int SwordEffect;
+extern int TitleGraph;
 
 // ‰æ‘œ‚Ìc‰¡‘å‚«‚³
 extern int imgW, imgH;
@@ -66,8 +69,8 @@ void GameUpdate();
 
 void GameDraw();
 
-void SpawnBird();
-
 void GameFinalize();
 
 bool IsGameOver();
+
+void SpawnEnemy(const StageSpawnData& data);
