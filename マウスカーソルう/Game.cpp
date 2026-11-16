@@ -26,7 +26,7 @@ int imgW, imgH;
 
 double bgX = 0.0;
 double scrollSpeed = 2.0;
-int screenWidth = 1300;
+int screenWidth = 1280;
 
 int mouseX, mouseY;
 
@@ -350,44 +350,119 @@ void GameUpdate()
         effectHitThisAttack = false;
     }
 
-    if (sword.GetAttack() && !effectHitThisAttack)
+ //&& !effectHitThisAttack
+    if (sword.GetAttack())
     {
+        // ---------------------------------
+        // 前フレームと現在の剣の線分を取得
+        // ---------------------------------
+
+        float oldStartX, oldStartY;
+        float oldEndX, oldEndY;
+
         float startX, startY;
         float endX, endY;
+
+        sword.GetOldSwordSegment(
+            oldStartX, oldStartY,
+            oldEndX, oldEndY
+        );
 
         sword.GetSwordSegment(
             startX, startY,
             endX, endY
         );
 
+        // ---------------------------------
+        // 剣が移動した距離を計算
+        // ---------------------------------
+
+        float rootMove = sqrtf(
+            (startX - oldStartX) * (startX - oldStartX) +
+            (startY - oldStartY) * (startY - oldStartY)
+        );
+
+        float tipMove = sqrtf(
+            (endX - oldEndX) * (endX - oldEndX) +
+            (endY - oldEndY) * (endY - oldEndY)
+        );
+
+        // 根元と先端のうち、大きい移動距離を使う
+        float maxMove = (rootMove > tipMove) ? rootMove : tipMove;
+
+        // 約8ピクセル間隔で途中の剣を調べる
+        int steps = (int)ceilf(maxMove / 8.0f);
+
+        if (steps < 1)
+        {
+            steps = 1;
+        }
+
+        // ---------------------------------
+        // 敵とのスイープ判定
+        // ---------------------------------
+
         for (auto& enemy : enemies)
         {
             if (!enemy->IsAlive()) continue;
 
-            float distance = PointToSegmentDistance(
-                enemy->GetX(),
-                enemy->GetY(),
-                startX, startY,
-                endX, endY
-            );
-
             const float enemyRadius = enemy->GetRadius();
             const float swordRadius = 12.0f;
 
-            if (distance <= enemyRadius + swordRadius)
-            {
-                int actualDamage = enemy->TakeDamage(player.GetAttackPower());
+            bool hit = false;
 
-                // 実際にダメージを与えた場合
-                if (actualDamage > 0)
+            // 前フレームから現在までの剣を順番に調べる
+            for (int i = 0; i <= steps; i++)
+            {
+                float t = (float)i / steps;
+
+                // 剣の根元を補間
+                float sampleStartX =
+                    oldStartX + (startX - oldStartX) * t;
+
+                float sampleStartY =
+                    oldStartY + (startY - oldStartY) * t;
+
+                // 剣の先端を補間
+                float sampleEndX =
+                    oldEndX + (endX - oldEndX) * t;
+
+                float sampleEndY =
+                    oldEndY + (endY - oldEndY) * t;
+
+                // 途中の剣と敵との距離を調べる
+                float distance = PointToSegmentDistance(
+                    enemy->GetX(),
+                    enemy->GetY(),
+                    sampleStartX,
+                    sampleStartY,
+                    sampleEndX,
+                    sampleEndY
+                );
+
+                if (distance <= enemyRadius + swordRadius)
                 {
-                    // 敵を倒した瞬間だけ100点加算
-                    if (!enemy->IsAlive())
-                    {
-                        score += 100;
-                    }
+                    hit = true;
+                    break;
+                }
+            }
+
+            // ---------------------------------
+            // ヒットした場合の処理
+            // ---------------------------------
+
+            if (hit)
+            {
+                int actualDamage =
+                    enemy->TakeDamage(player.GetAttackPower());
+
+                // 敵を倒した瞬間だけ100点加算
+                if (actualDamage > 0 && !enemy->IsAlive())
+                {
+                    score += 100;
                 }
 
+                // 実際にダメージを与えた場合だけ表示
                 if (actualDamage > 0)
                 {
                     DamageText text;
@@ -401,6 +476,7 @@ void GameUpdate()
                     damageTexts.push_back(text);
                 }
 
+                // ヒットエフェクト
                 effectX = enemy->GetX();
                 effectY = enemy->GetY();
 
@@ -408,12 +484,14 @@ void GameUpdate()
                 effectCount = 0;
                 GraphActive = true;
 
+                // この攻撃では再度ヒットしない
                 effectHitThisAttack = true;
 
                 break;
             }
         }
     }
+
 
         // ---------------------------------
         // プレイヤーと敵の接触判定
@@ -568,7 +646,7 @@ void GameDraw()
         "score : %d", score
     );
 
-    DrawCollisionDebug();
+    // DrawCollisionDebug();
 }
 
 // ---------------------------------
