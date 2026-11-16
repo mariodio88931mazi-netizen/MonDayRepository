@@ -50,6 +50,12 @@ void Sword::Initialize(
 
 void Sword::Update()
 {
+    // 前フレームの剣の線分を保存
+    GetSwordSegment(
+        oldStartX, oldStartY,
+        oldEndX, oldEndY
+    );
+
     int mouseX;
     int mouseY;
 
@@ -132,7 +138,7 @@ void Sword::Update()
         endX, endY
     );
 
-    // 現在の剣の位置を保存
+    // 現在の線分を次のフレーム用に保存
     oldStartX = startX;
     oldStartY = startY;
 
@@ -184,6 +190,18 @@ void Sword::DrawEffect(float x, float y, float scale, float graph)
 		graph,
 		TRUE
 	);
+}
+
+void Sword::GetOldSwordSegment(
+    float& startX, float& startY,
+    float& endX, float& endY
+) const
+{
+    startX = oldStartX;
+    startY = oldStartY;
+
+    endX = oldEndX;
+    endY = oldEndY;
 }
 
 void Sword::GetSwordSegment(float& startx, float& starty, float& endx, float& endy) const

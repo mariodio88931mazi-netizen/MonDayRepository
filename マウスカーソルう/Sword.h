@@ -39,6 +39,10 @@ public:
 
 	void GetSwordSegment(float& startx, float& starty, float& endx, float& endy) const;
 
+    void GetOldSwordSegment(
+        float& startX, float& startY,
+        float& endX, float& endY
+    ) const;
 	// À•Wæ“¾(“–‚½‚è”»’è—p)
     float GetX() const;
 	float GetY() const;
